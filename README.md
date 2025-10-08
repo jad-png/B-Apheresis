@@ -1,5 +1,5 @@
 ```shell
-    B-Apheresis/
+  B-Apheresis/
 ├── pom.xml
 ├── src/
 │   ├── main/
@@ -9,11 +9,10 @@
 │   │   │           ├── config/
 │   │   │           │   ├── DatabaseConfig.java         # Singleton DB connection
 │   │   │           │   ├── LoggerConfig.java           # Config for custom logger
-│   │   │           │   ├── MapperConfig.java           # Entity ↔ DTO mapping setup
 │   │   │           │   └── DIContainer.java            # Manual dependency injector
 │   │   │           │
 │   │   │           ├── entity/
-│   │   │           │   ├── Donor.java                  # Example entity
+│   │   │           │   ├── Donor.java
 │   │   │           │   ├── Recipient.java
 │   │   │           │   └── Appointment.java
 │   │   │           │
@@ -21,6 +20,12 @@
 │   │   │           │   ├── DonorDTO.java
 │   │   │           │   ├── RecipientDTO.java
 │   │   │           │   └── AppointmentDTO.java
+│   │   │           │
+│   │   │           ├── mapper/
+│   │   │           │   ├── DonorMapper.java            # Donor ↔ DonorDTO mapping
+│   │   │           │   ├── RecipientMapper.java        # Recipient ↔ RecipientDTO mapping
+│   │   │           │   ├── AppointmentMapper.java      # Appointment ↔ AppointmentDTO mapping
+│   │   │           │   └── MapperFactory.java          # Optional: central mapper provider
 │   │   │           │
 │   │   │           ├── dao/
 │   │   │           │   ├── DonorDAO.java
@@ -73,5 +78,6 @@
 │           └── service/
 │               └── DonorServiceTest.java
 └── target/
+
 
 ```
