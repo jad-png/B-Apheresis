@@ -9,7 +9,7 @@ public class DIContainer {
 
     private DIContainer() {}
 
-    public DIContainer getInstance() {
+    public static DIContainer getInstance() {
         return instance;
     }
 
