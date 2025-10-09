@@ -31,9 +31,9 @@ public class Donor extends Account {
 
     // TODO: create recipient class and type this attribute with it
     // many donors can donate to one recipient relation
-//    @ManyToOne
+    // @ManyToOne
     // recipient fk
-//    @JoinColumn(name = "revipient_id")
+    // @JoinColumn(name = "revipient_id")
 
     public Donor() {
         super();
@@ -57,7 +57,7 @@ public class Donor extends Account {
         this.lastDonationDate = lastDonationDate;
     }
 
-    public MedicalCondition getMedicalCondition() { return medicalCondition; }
+    public MedicalCondition getMedicalCondition() { return mdCondition; }
     // setter for medical COndition
 
     // here getter/setter for recipient
