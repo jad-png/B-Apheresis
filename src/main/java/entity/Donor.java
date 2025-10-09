@@ -1,5 +1,7 @@
 package entity;
 
+import entity.enums.Status;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,6 +13,9 @@ public class Donor extends Account {
     private Double weight;
 
     // enum status
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
     @Column(name = "last_donation_date")
     @Temporal(TemporalType.DATE)
