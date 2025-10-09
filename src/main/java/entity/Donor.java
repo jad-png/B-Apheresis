@@ -1,5 +1,6 @@
 package entity;
 
+import entity.enums.MedicalCondition;
 import entity.enums.Status;
 
 import javax.persistence.*;
@@ -22,6 +23,9 @@ public class Donor extends Account {
     private Date lastDonationDate;
 
     // medical condition enum
+    @Enumerated(EnumType.STRING)
+    @Column(name = "medical_condition")
+    private MedicalCondition mdCondition;
 
     // many donors can donate to one recipient relation
     // @JoinColumn(name = "revipient_id")
