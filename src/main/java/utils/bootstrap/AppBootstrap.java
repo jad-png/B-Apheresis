@@ -16,7 +16,7 @@ public class AppBootstrap implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-
+        // TODO: destroy all services 
     }
 
 
