@@ -203,9 +203,16 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
         logMethodEntry("findAvailableDonors");
         try {
             TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE" +
-                            "ORDER BY d.created_at DESC", Donor.class
+                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                            "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class);
+
             );
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findAvailableDonors", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding available donors", e);
+            throw new RuntimeException("Failed to retrieve available donors", e);
         }
     }
 
