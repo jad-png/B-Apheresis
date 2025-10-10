@@ -61,7 +61,6 @@ public class LoggerUtil {
     public static void logError(Logger logger, String operation, Throwable throwable) {
         logger.error("Error during {}: {}", operation, throwable.getMessage(), throwable);
     }
-
     //Log warning with context
     public static void logWarning(Logger logger, String operation, String warning) {
         logger.warn("Warning during {}: {}", operation, warning);

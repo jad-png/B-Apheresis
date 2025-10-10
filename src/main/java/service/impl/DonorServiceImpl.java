@@ -11,6 +11,7 @@ import utils.Loggable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DonorServiceImpl extends Loggable implements DonorService {
     private final DonorDao dao;
@@ -48,12 +49,33 @@ public class DonorServiceImpl extends Loggable implements DonorService {
 
     @Override
     public DonorDTO createDonor(DonorDTO dto) {
-        return null;
+        logMethodEntry("createDonor", dto);
+
+        if (dto == null) {
+            logMethodExit("createDonor", "DTO is null");
+            throw new IllegalArgumentException("DonorDTO cannot be null");
+        }
+
+        // TODO: condition to check if Cin Unique
+
+        Donor donor = mapper.toEntity(dto);
+        updateDonorStatus(donor);
+        Donor saved = dao.save(donor);
+
+        DonorDTO result = toDTOWithEligibility(saved);
+        logMethodExit("CreateDonor", result);
+        return result;
     }
 
     @Override
     public List<DonorDTO> getAllDonors() {
-        return Collections.emptyList();
+        logMethodEntry("getAllDonors");
+
+        List<Donor> donors = dao.lsAll();
+        List<DonorDTO> result = donors.stream()
+                .map(this::toDTOWithEligibility).collect(Collectors.toList());
+        logMethodExit("getAllDonors", result.size() + " donors found");
+        return result;
     }
 
     @Override
@@ -94,5 +116,13 @@ public class DonorServiceImpl extends Loggable implements DonorService {
     @Override
     public Optional<DonorDTO> getDonorByCin(String cin) {
         return Optional.empty();
+    }
+
+    // Helper method to convert entity to DTO and add eligibility info
+    public DonorDTO toDTOWithEligibility(Donor donor) {
+        DonorDTO dto = mapper.toDto(donor);
+        dto.setEligible(isEligible(donor));
+        dto.setCanDonate(canDonate(donor));
+        return dto;
     }
 }

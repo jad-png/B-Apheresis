@@ -6,7 +6,7 @@ import entity.enums.MedicalCondition;
 import utils.Loggable;
 
 public class DonorMapper {
-    public static DonorDTO toDto(Donor donor) {
+    public DonorDTO toDto(Donor donor) {
         if (donor == null) {
             return null;
         }
@@ -30,7 +30,7 @@ public class DonorMapper {
         return dto;
     }
 
-    public static Donor toEntity(DonorDTO dto) {
+    public Donor toEntity(DonorDTO dto) {
         if (dto == null) {
             return null;
         }
