@@ -27,6 +27,22 @@ public class DonorMapper {
     }
 
     public static Donor toEntity(DonorDTO dto) {
+        if (dto == null) {
+            return null;
+        }
 
+        Donor donor = new Donor();
+        donor.setId(dto.getId());
+        donor.setFirstName(dto.getFirstName());
+        donor.setLastName(dto.getLastName());
+        donor.setCin(dto.getCin());
+        donor.setBirthday(dto.getBirthday());
+        donor.setBloodType(dto.getBloodType());
+        donor.setGender(dto.getGender());
+        donor.setWeight(dto.getWeight());
+        donor.setLastDonationDate(dto.getLastDonationDate());
+        donor.setMedicalCondition(dto.getMedicalCondition() != null ? donor.getMedicalCondition() : MedicalCondition.HEALTHY);
+
+        return donor;
     }
 }
