@@ -119,7 +119,19 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     // Business specific queries
     @Override
     public List<Donor> findByStatus(Status status) {
-        return Collections.emptyList();
+        logMethodEntry("findByStatus", status);
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.status = :status ORDER BY d.created_at DESC", Donor.class
+            );
+            query.setParameter("status", status);
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findByStatus", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding donors by status", e);
+            throw new RuntimeException("Failed to retrieve donors by status", e);
+        }
     }
 
     @Override
