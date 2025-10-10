@@ -44,10 +44,66 @@ public class Recipient extends Account {
         this.requiredBags = 0;
     }
 
+    // busineess
+    public void calculateRequiredBags() {
+        switch (mcSituation) {
+            case CRITICAL:
+                this.requiredBags = 4;
+                break;
+            case URGENT:
+                this.requiredBags = 3;
+                break;
+            case NORMAL:
+                this.requiredBags = 1;
+                break;
+            default:
+                this.requiredBags = 1;
+        }
+        updateState();
+    }
+
+    public boolean isSatisfied() {
+        return currentBags >= requiredBags;
+    }
+
+    public Integer getRemainingBags() {
+        return Math.max(0, requiredBags - currentBags);
+    }
+
+    public int getPriorityLevel() {
+        switch (mcSituation) {
+            case CRITICAL: return 3;
+            case URGENT: return 2;
+            case NORMAL: return 1;
+            default: return 0;
+        }
+    }
+
+    public void addDonor(Donor donor) {
+        if (state != State.SATISFIED && donors.size() < requiredBags) {
+            donors.add(donor);
+            donor.setRecipient(this);
+            currentBags = donors.size();
+            updateState();
+        }
+    }
+
+    public void removeDonor(Donor donor) {
+        if (donors.remove(donor)) {
+            donor.setRecipient(null);
+            currentBags = donors.size();
+            updateState();
+        }
+    }
+    
+    public void updateState() {
+        this.state = isSatisfied() ? State.SATISFIED : State.WAITING;
+    }
+
+    // getters/setters
     public Integer getRequiredBags() {
         return requiredBags;
     }
-
     public void setRequiredBags(Integer requiredBags) {
         this.requiredBags = requiredBags;
     }
@@ -55,7 +111,6 @@ public class Recipient extends Account {
     public Integer getCurrentBags() {
         return currentBags;
     }
-
     public void setCurrentBags(Integer currentBags) {
         this.currentBags = currentBags;
     }
@@ -63,7 +118,6 @@ public class Recipient extends Account {
     public State getState() {
         return state;
     }
-
     public void setState(State state) {
         this.state = state;
     }
@@ -71,7 +125,6 @@ public class Recipient extends Account {
     public Situation getMcSituation() {
         return mcSituation;
     }
-
     public void setMcSituation(Situation mcSituation) {
         this.mcSituation = mcSituation;
     }
@@ -79,7 +132,6 @@ public class Recipient extends Account {
     public List<Donor> getDonors() {
         return donors;
     }
-
     public void setDonors(List<Donor> donors) {
         this.donors = donors;
     }
