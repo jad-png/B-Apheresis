@@ -23,4 +23,10 @@ interface DonorDao {
     List<Donor> findEligibleDonors();
     List<Donor> findAvailableDonors();
     List<Donor> findByRecipient(Long recipientId);
+
+    // Advanced queries
+    List<Donor> findCompatibleDonors(BloodType recipientBloodType);
+    List<Donor> findDonorsWithNoRecipient();
+    Long countByStatus(Status status);
+    boolean existsByCin(String cin);
 }
