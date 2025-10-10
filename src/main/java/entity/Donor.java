@@ -6,7 +6,9 @@ import entity.enums.MedicalCondition;
 import entity.enums.Status;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "donors")
@@ -31,9 +33,10 @@ public class Donor extends Account {
 
     // TODO: create recipient class and type this attribute with it
     // many donors can donate to one recipient relation
-    // @ManyToOne
+    @ManyToOne
     // recipient fk
-    // @JoinColumn(name = "revipient_id")
+    @JoinColumn(name = "recipient_id")
+    private Recipient recipient;
 
     public Donor() {
         super();
@@ -49,16 +52,34 @@ public class Donor extends Account {
         this.status = Status.AVAILABLE;
     }
 
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
+    public Status getStatus() {
+        return status;
+    }
 
-    public Date getLastDonationDate() { return lastDonationDate; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Date getLastDonationDate() {
+        return lastDonationDate;
+    }
+
     public void setLastDonationDate(Date lastDonationDate) {
         this.lastDonationDate = lastDonationDate;
     }
 
-    public MedicalCondition getMedicalCondition() { return mdCondition; }
+    public MedicalCondition getMedicalCondition() {
+        return mdCondition;
+    }
     // setter for medical COndition
 
     // here getter/setter for recipient
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
+    }
+
 }
