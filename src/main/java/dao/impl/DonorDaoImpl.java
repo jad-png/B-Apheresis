@@ -136,7 +136,18 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
 
     @Override
     public List<Donor> findByBloodType(BloodType bloodType) {
-        return Collections.emptyList();
+        logMethodEntry("findByBloodType", bloodType);
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.blod_type = :bloodType ORDER BY d.created_at DESC", Donor.class);
+            query.setParameter("bloodType", bloodType);
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findByBloodType", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding donors by blood type", e);
+            throw new RuntimeException("Failed to retrieve donors by blood type", e);
+        }
     }
 
     @Override
