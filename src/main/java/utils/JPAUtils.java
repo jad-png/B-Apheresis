@@ -9,18 +9,25 @@ public class JPAUtils {
 
     static {
         try {
-        emf = Persistence.createEntityManagerFactory("B-ApheresisPU");
+            emf = Persistence.createEntityManagerFactory("B-ApheresisPU");
         } catch (Exception e) {
             System.err.println("EntityManagerFactory initialization failed: " + e.getMessage());
             throw new ExceptionInInitializerError(e);
         }
     }
 
+    // create EM Using EMF
     public static EntityManager createEM() {
         return emf.createEntityManager();
     }
 
-    public static void close() {
+    // retrieve created EM
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return emf;
+    }
+
+    // close it
+    public static void closeEM() {
         if (emf != null && emf.isOpen()) {
             emf.close();
         }
