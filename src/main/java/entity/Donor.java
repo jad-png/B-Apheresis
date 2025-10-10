@@ -52,34 +52,50 @@ public class Donor extends Account {
         this.status = Status.AVAILABLE;
     }
 
-    public Status getStatus() {
-        return status;
+    // Business
+    public boolean isEligible() {
+        int age = calculateAge();
+        boolean ageValid = age >= 18 && age <= 65;
+        boolean weightValid = weight != null && weight >= 50.0;
+        boolean medicalValid = mdCondition == MedicalCondition.HEALTHY;
+
+        return ageValid && weightValid && medicalValid;
     }
 
+    public boolean canDonate() {
+        return isEligible() && status == Status.AVAILABLE;
+    }
+
+    public void updateStatus() {
+        if (!isEligible()) {
+            this.status = Status.INELIGIBLE;
+        } else if (recipient != null) {
+            this.status = Status.UNAVAILABLE;
+        } else {
+            this.status = Status.AVAILABLE;
+        }
+    }
+
+    // getteres/setters
+    public Status getStatus() { return status; }
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public Date getLastDonationDate() {
-        return lastDonationDate;
-    }
-
+    public Date getLastDonationDate() { return lastDonationDate; }
     public void setLastDonationDate(Date lastDonationDate) {
+
         this.lastDonationDate = lastDonationDate;
     }
 
-    public MedicalCondition getMedicalCondition() {
-        return mdCondition;
-    }
-    // setter for medical COndition
-
-    // here getter/setter for recipient
-    public Recipient getRecipient() {
-        return recipient;
+    public MedicalCondition getMedicalCondition() { return mdCondition; }
+    public void setMedicalCondition(MedicalCondition medicalCondition) {
+        this.mdCondition = medicalCondition;
+        updateStatus();
     }
 
+    public Recipient getRecipient() { return recipient; }
     public void setRecipient(Recipient recipient) {
         this.recipient = recipient;
     }
-
 }
