@@ -80,42 +80,103 @@ public class DonorServiceImpl extends Loggable implements DonorService {
 
     @Override
     public Optional<DonorDTO> getDonorById(Long id) {
-        return Optional.empty();
+        logMethodEntry("getDonorById", id);
+
+        Optional<Donor> donorOpt = dao.findById(id);
+        Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
+
+        logMethodExit("getDonorById", result.isPresent() ? "Found" : "Not Found");
+        return result;
     }
 
     @Override
     public DonorDTO updateDonor(DonorDTO donorDTO) {
-        return null;
+        logMethodEntry("updateDonor", donorDTO);
+
+        if (donorDTO == null || donorDTO.getId() == null) {
+            throw new IllegalArgumentException("DonorDTO or its ID cannot be null.");
+        }
+
+        Donor donor = mapper.toEntity(donorDTO);
+        updateDonorStatus(donor);
+
+        Donor updated = dao.update(donor);
+        DonorDTO result = toDTOWithEligibility(updated);
+
+        logMethodExit("updateDonor", result);
+        return result;
     }
 
     @Override
     public void deleteDonor(Long id) {
+        logMethodEntry("deleteDonor", id);
 
+        dao.delete(id);
+
+        logMethodExit("deleteDonor");
     }
 
     @Override
     public List<DonorDTO> getAvailableDonors() {
-        return Collections.emptyList();
+        logMethodEntry("getAvailableDonors");
+
+        List<Donor> donors = dao.findAvailableDonors();
+        List<DonorDTO> result = donors.stream()
+                .map(this::toDTOWithEligibility)
+                .collect(Collectors.toList());;
+
+        logMethodExit("getAvailableDonors", result.size() + " found");
+        return result;
     }
 
     @Override
     public Optional<DonorDTO> getEligibleDonors() {
-        return Optional.empty();
+        logMethodEntry("getEligibleDonors");
+
+        List<Donor> donors = dao.findEligibleDonors();
+
+        // Return just the first eligible donor as Optional (if that's the intent).
+        Optional<DonorDTO> result = donors.stream()
+                .findFirst()
+                .map(this::toDTOWithEligibility);
+
+        logMethodExit("getEligibleDonors", result.isPresent() ? "Found" : "None found");
+        return result;
     }
 
     @Override
     public List<DonorDTO> getDonorsByBloodType(BloodType bloodType) {
-        return Collections.emptyList();
+
+        logMethodEntry("getDonorsByBloodType", bloodType);
+
+        List<Donor> donors = dao.findByBloodType(bloodType);
+        List<DonorDTO> result = donors.stream()
+                .map(this::toDTOWithEligibility)
+                .collect(Collectors.toList());
+
+        logMethodExit("getDonorsByBloodType", result.size() + " found");
+        return result;
     }
 
     @Override
     public boolean isCinUnique(String cin) {
-        return false;
+        logMethodEntry("isCinUnique", cin);
+
+        boolean unique = !dao.existsByCin(cin);
+
+        logMethodExit("isCinUnique", unique);
+        return unique;
     }
 
     @Override
     public Optional<DonorDTO> getDonorByCin(String cin) {
-        return Optional.empty();
+        logMethodEntry("getDonorByCin", cin);
+
+        Optional<Donor> donorOpt = dao.findByCin(cin);
+        Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
+
+        logMethodExit("getDonorByCin", result.isPresent() ? "Found" : "Not Found");
+        return result;
     }
 
     // Helper method to convert entity to DTO and add eligibility info
