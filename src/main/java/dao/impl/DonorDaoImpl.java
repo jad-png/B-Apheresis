@@ -8,9 +8,8 @@ import utils.JPAUtils;
 import utils.Loggable;
 import dao.interfaces.DonorDao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import javax.swing.text.html.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,27 +25,95 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     // Basic Crud queries
     @Override
     public Donor save(Donor donor) {
-        return null;
+        logMethodEntry("save", donor);
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+            if (donor.getId() == null) {
+                em.persist(donor);
+            } else {
+                donor = em.merge(donor);
+            }
+            tx.commit();
+            logMethodExit("save", donor);
+            return donor;
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Error saving donor", e);
+            throw new RuntimeException("Failed to save donor", e);
+        }
     }
 
     @Override
     public Optional<Donor> findById(Long id) {
-        return Optional.empty();
+        logMethodEntry("findById", id);
+        try {
+            Donor donor = em.find(Donor.class, id);
+            logMethodExit("findById", id);
+            return Optional.ofNullable(donor);
+        } catch (Exception e) {
+            logError("Error finding donor by Id", e);
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Donor> lsAll() {
-        return Collections.emptyList();
+        logMethodEntry("lsAll");
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d", Donor.class
+            );
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findAll", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding all donors", e);
+            throw new RuntimeException("Failed to retrieve donors", e);
+        }
     }
 
     @Override
     public Donor update(Donor donor) {
-        return null;
+        logMethodEntry("update", donor);
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Donor updatedDonor = em.merge(donor);
+            tx.commit();
+            logMethodExit("update", updatedDonor);
+            return updatedDonor;
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Error updating donor", e);
+            throw new RuntimeException("Failed to update donor", e);
+        }
     }
 
     @Override
     public void delete(Long id) {
-
+        logMethodEntry("delete", id);
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Donor donor = em.find(Donor.class, id);
+            if (donor != null) {
+                em.remove(donor);
+            }
+            tx.commit();
+            logMethodExit("delete", id);
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Error deleting donor", e);
+            throw new RuntimeException("Failed to delete donor", e);
+        }
     }
 
     // Business specific queries
