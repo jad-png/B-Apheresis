@@ -1,6 +1,8 @@
 package utils.bootstrap;
 
 import config.DIContainer;
+import service.impl.DonorServiceImpl;
+import service.interfaces.DonorService;
 import utils.JPAUtils;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +15,11 @@ public class AppBootstrap implements ServletContextListener {
         DIContainer injector = DIContainer.getInstance();
 
         injector.registerBean(EntityManagerFactory.class, JPAUtils.getEntityManagerFactory());
+
+        // services
+        DonorServiceImpl donorSer = new DonorServiceImpl();
+        injector.registerBean(DonorServiceImpl.class, donorSer);
+        injector.registerBean(DonorService.class, donorSer);
 
         // TODO: create services instances
         // register them

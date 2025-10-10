@@ -75,12 +75,15 @@ public class Donor extends Account {
             this.status = Status.AVAILABLE;
         }
     }
-
     // getteres/setters
     public Status getStatus() { return status; }
     public void setStatus(Status status) {
         this.status = status;
     }
+
+
+    public Double getWeight() { return weight; }
+    public void setWeight(Double weight) { this.weight = weight; }
 
     public Date getLastDonationDate() { return lastDonationDate; }
     public void setLastDonationDate(Date lastDonationDate) {
