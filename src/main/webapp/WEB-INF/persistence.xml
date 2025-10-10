@@ -12,6 +12,9 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- List all your entity classes -->
+        <class>entity.Account</class>
+        <class>entity.Recipient</class>
+        <class>entity.Donor</class>
 
         <!-- Database configuration -->
         <properties>

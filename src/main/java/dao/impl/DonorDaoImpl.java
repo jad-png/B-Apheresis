@@ -152,22 +152,61 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
 
     @Override
     public List<Donor> findByMedicalCondition(String condition) {
-        return Collections.emptyList();
+        logMethodEntry("findByMedicalCondition", condition);
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.mdCondition = :condition ORDER BY d.created_at DESC", Donor.class);
+            query.setParameter("condition", condition);
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findByMedicalCondition", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding donors by medical condition", e);
+            throw new RuntimeException("Failed to retrieve donors by medical condition", e);
+        }
     }
 
     @Override
     public Optional<Donor> findByCin(String cin) {
-        return Optional.empty();
+        logMethodEntry("findByCin", cin);
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.cin = :cin", Donor.class);
+            query.setParameter("cin", cin);
+            Donor donor = query.getResultStream().findFirst().orElse(null);
+            logMethodExit("findByCin", donor);
+            return Optional.ofNullable(donor);
+        } catch (Exception e) {
+            logError("Error finding donor by CIN", e);
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Donor> findEligibleDonors() {
-        return Collections.emptyList();
+        logMethodEntry("findEligibleDonors");
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                            "ORDER BY d.created_at DESC", Donor.class);
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findEligibleDonors", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding eligible donors", e);
+            throw new RuntimeException("Failed to retrieve eligible donors", e);
+        }
     }
 
     @Override
     public List<Donor> findAvailableDonors() {
-        return Collections.emptyList();
+        logMethodEntry("findAvailableDonors");
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE" +
+                            "ORDER BY d.created_at DESC", Donor.class
+            );
+        }
     }
 
     @Override
