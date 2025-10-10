@@ -20,5 +20,9 @@ public class JPAUtils {
         return emf.createEntityManager();
     }
 
-    
+    public static void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 }
