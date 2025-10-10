@@ -1,6 +1,9 @@
 package utils.bootstrap;
 
 import config.DIContainer;
+import dao.impl.DonorDaoImpl;
+import dao.interfaces.DonorDao;
+import mapper.DonorMapper;
 import service.impl.DonorServiceImpl;
 import service.interfaces.DonorService;
 import utils.JPAUtils;
@@ -14,12 +17,17 @@ public class AppBootstrap implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         DIContainer injector = DIContainer.getInstance();
 
+        DonorDao donorDao = new DonorDaoImpl();
+        DonorMapper donorMapper = new DonorMapper();
+        DonorService donorService = new DonorServiceImpl(donorDao, donorMapper);
+
+        // Entity manager bean
         injector.registerBean(EntityManagerFactory.class, JPAUtils.getEntityManagerFactory());
 
-        // services
-        DonorServiceImpl donorSer = new DonorServiceImpl();
-        injector.registerBean(DonorServiceImpl.class, donorSer);
-        injector.registerBean(DonorService.class, donorSer);
+        // Donor Beans
+        injector.registerBean(DonorDao.class, donorDao);
+        injector.registerBean(DonorMapper.class, donorMapper);
+        injector.registerBean(DonorService.class, donorService);
 
         // TODO: create services instances
         // register them

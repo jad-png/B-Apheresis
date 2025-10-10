@@ -20,8 +20,12 @@ public class DonorMapper {
         dto.setBloodType(donor.getBloodType());
         dto.setGender(donor.getGender());
         dto.setWeight(donor.getWeight());
+        dto.setStatus(donor.getStatus());
         dto.setLastDonationDate(donor.getLastDonationDate());
-        dto.setMedicalCondition(donor.getMedicalCondition() != null ? donor.getMedicalCondition() : MedicalCondition.HEALTHY);
+        dto.setMedicalCondition(donor.getMedicalCondition());
+        dto.setCreatedAt(donor.getCreatedAt());
+
+        dto.setFullName(donor.getFirstName() + " " + donor.getLastName());
 
         return dto;
     }
@@ -42,6 +46,7 @@ public class DonorMapper {
         donor.setWeight(dto.getWeight());
         donor.setLastDonationDate(dto.getLastDonationDate());
         donor.setMedicalCondition(dto.getMedicalCondition() != null ? donor.getMedicalCondition() : MedicalCondition.HEALTHY);
+        donor.setCreatedAt(dto.getCreatedAt());
 
         return donor;
     }

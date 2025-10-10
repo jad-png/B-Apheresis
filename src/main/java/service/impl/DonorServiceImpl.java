@@ -1,8 +1,10 @@
 package service.impl;
 
+import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.Donor;
 import entity.enums.BloodType;
+import mapper.DonorMapper;
 import service.interfaces.DonorService;
 import utils.Loggable;
 
@@ -11,6 +13,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class DonorServiceImpl extends Loggable implements DonorService {
+    private final DonorDao dao;
+    private final DonorMapper mapper;
+
+    public DonorServiceImpl(DonorDao dao, DonorMapper mapper) {
+        this.dao = dao;
+        this.mapper = mapper;
+    }
+
     @Override
     public boolean isEligible(Donor donor) {
         logMethodEntry("isEligible", donor);
@@ -74,5 +84,15 @@ public class DonorServiceImpl extends Loggable implements DonorService {
     @Override
     public List<DonorDTO> getDonorsByBloodType(BloodType bloodType) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isCinUnique(String cin) {
+        return false;
+    }
+
+    @Override
+    public Optional<DonorDTO> getDonorByCin(String cin) {
+        return Optional.empty();
     }
 }
