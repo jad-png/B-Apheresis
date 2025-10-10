@@ -25,7 +25,6 @@ public interface DonorService {
     public List<DonorDTO> getDonorsByBloodType(BloodType bloodType);
 
     // helpers
-//    public boolean isCinUnique(String cin);
-//  public Optional<DonorDTO> getDonorByCin(String cin);
-//    public void close();
+    public boolean isCinUnique(String cin);
+    public Optional<DonorDTO> getDonorByCin(String cin);
 }
