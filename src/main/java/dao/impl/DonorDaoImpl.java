@@ -205,8 +205,6 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
             TypedQuery<Donor> query = em.createQuery(
                     "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
                             "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class);
-
-            );
             List<Donor> donors = query.getResultList();
             logMethodExit("findAvailableDonors", donors.size() + " donors found");
             return donors;
@@ -218,27 +216,89 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
 
     @Override
     public List<Donor> findByRecipient(Long recipientId) {
-        return Collections.emptyList();
+        logMethodEntry("findByRecipient", recipientId);
+        try {
+            TypedQuery<Donor> query = em.createQuery("SELECT d FROM Donor d WHERE d.recipient.id = :recipientId ORDER BY d.created_at DESC", Donor.class);
+            query.setParameter("recipientId", recipientId);
+            List<Donor> donors =  query.getResultList();
+            logMethodExit("findByRecipient", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding donors by recipient", e);
+            throw new RuntimeException("Failed to retrieve donors by recipient", e);
+        }
     }
 
     // Advanced queries
     @Override
     public List<Donor> findCompatibleDonors(BloodType recipientBloodType) {
-        return Collections.emptyList();
+        logMethodEntry("findCompatibleDonors", recipientBloodType);
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                            "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
+            );
+
+            List<Donor> donors = query.getResultList();
+            logMethodExit("findCompatibleDonors", donors.size() + " potential donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding compatible donors", e);
+            throw new RuntimeException("Failed to retrieve compatible donors", e);
+        }
     }
 
     @Override
     public List<Donor> findDonorsWithNoRecipient() {
-        return Collections.emptyList();
+        logMethodEntry("findDonorsWithNoRecipient");
+        try {
+            TypedQuery<Donor> query = em.createQuery(
+                    "SELECT d FROM Donor d WHERE d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
+            );
+
+            List<Donor> donors = query.getResultList();
+            logMethodEntry("findDonorsWithNoRecipient", donors.size() + " donors found");
+            return donors;
+        } catch (Exception e) {
+            logError("Error finding donors with no recipient", e);
+            throw new RuntimeException("Failed to retrieve donors with no recipient", e);
+        }
     }
 
     @Override
     public Long countByStatus(Status status) {
-        return 0L;
+        logMethodEntry("countByStatus", status);
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(d) FROM Donor d WHERE d.status = :status", Long.class);
+            query.setParameter("status", status);
+            Long count = query.getSingleResult();
+            logMethodExit("countByStatus", count);
+            return count;
+        } catch (Exception e) {
+            logError("Error counting donors by status", e);
+            throw new RuntimeException("Failed to count donors by status", e);
+        }
     }
 
     @Override
     public boolean existsByCin(String cin) {
-        return false;
+        logMethodEntry("existsByCin", cin);
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(d) FROM Donor d WHERE d.cin = :cin", Long.class);
+            query.setParameter("cin", cin);
+            Long count = query.getSingleResult();
+            boolean exists = count > 0;
+            logMethodExit("existsByCin", exists);
+            return exists;
+        } catch (Exception e) {
+            logError("Error checking if donor exists by CIN", e);
+            return false;
+        }
+    }
+
+    public void close() {
+        em.close();
     }
 }
