@@ -7,7 +7,7 @@ import entity.enums.Status;
 import java.util.List;
 import java.util.Optional;
 
-interface DonorDao {
+public interface DonorDao {
     // Basic Crud
     Donor save(Donor donor);
     Optional<Donor> findById(Long id);
