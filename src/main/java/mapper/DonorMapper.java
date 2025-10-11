@@ -6,6 +6,7 @@ import entity.enums.MedicalCondition;
 import utils.Loggable;
 
 public class DonorMapper {
+
     public DonorDTO toDto(Donor donor) {
         if (donor == null) {
             return null;

@@ -1,9 +1,6 @@
 package dto;
 
-import entity.enums.BloodType;
-import entity.enums.Gender;
-import entity.enums.MedicalCondition;
-import entity.enums.State;
+import entity.enums.*;
 
 import java.util.Date;
 import java.util.List;
@@ -19,8 +16,9 @@ public class RecipientDTO {
     private Integer requiredBags;
     private Integer currentBags;
     private State state;
-    private MedicalCondition mdCondition;
+    private Situation situation;
     private List<DonorDTO> donors;
+    private String fullName;
 
     public RecipientDTO() {}
 
@@ -56,8 +54,11 @@ public class RecipientDTO {
     public State getState() { return state; }
     public void setState(State state) { this.state = state; }
 
-    public MedicalCondition getMdCondition() { return mdCondition; }
-    public void setMdCondition(MedicalCondition mdCondition) { this.mdCondition = mdCondition; }
+    public Situation getSituation() { return situation; }
+    public void setSituation(Situation situation) { this.situation = situation; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public List<DonorDTO> getDonors() { return donors; }
 }

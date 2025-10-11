@@ -23,7 +23,7 @@ public class Recipient extends Account {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "medical_situation")
-    private Situation mcSituation;
+    private Situation situation;
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Donor> donors;
@@ -36,9 +36,9 @@ public class Recipient extends Account {
 
     public Recipient(String firstName, String lastName, String cin, String phone,
                      Date birthday, BloodType bloodType, Gender gender,
-                     Double weight, Situation mcSituation) {
+                     Double weight, Situation situation) {
         super(firstName, lastName, cin, birthday, gender, bloodType);
-        this.mcSituation = mcSituation;
+        this.situation = situation;
         this.currentBags = 0;
         this.state = state.WAITING;
         this.requiredBags = 0;
@@ -46,7 +46,7 @@ public class Recipient extends Account {
 
     // busineess
     public void calculateRequiredBags() {
-        switch (mcSituation) {
+        switch (situation) {
             case CRITICAL:
                 this.requiredBags = 4;
                 break;
@@ -71,7 +71,7 @@ public class Recipient extends Account {
     }
 
     public int getPriorityLevel() {
-        switch (mcSituation) {
+        switch (situation) {
             case CRITICAL: return 3;
             case URGENT: return 2;
             case NORMAL: return 1;
@@ -122,11 +122,11 @@ public class Recipient extends Account {
         this.state = state;
     }
 
-    public Situation getMcSituation() {
-        return mcSituation;
+    public Situation getSituation() {
+        return situation;
     }
-    public void setMcSituation(Situation mcSituation) {
-        this.mcSituation = mcSituation;
+    public void setSituation(Situation situation) {
+        this.situation = situation;
     }
 
     public List<Donor> getDonors() {
