@@ -27,5 +27,23 @@ public class RecipientMapper {
         return dto;
     }
 
-    
+    public Recipient toEntity (RecipientDTO dto) {
+        if (dto == null) return null;
+
+        Recipient rec = new Recipient();
+        rec.setId(dto.getId());
+        rec.setFirstName(dto.getFistName());
+        rec.setLastName(dto.getLastName());
+        rec.setCin(dto.getCin());
+        rec.setBirthday(dto.getBirthday());
+        rec.setBloodType(dto.getBloodType());
+        rec.setGender(dto.getGender());
+
+        rec.setRequiredBags(dto.getRequiredBags());
+        rec.setCurrentBags(dto.getCurrentBags());
+        rec.setState(dto.getState());
+        rec.setSituation(dto.getSituation());
+        
+        return rec;
+    }
 }
