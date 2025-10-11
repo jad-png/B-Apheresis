@@ -6,14 +6,15 @@ import entity.enums.Situation;
 import entity.enums.State;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RecipientDao {
 
     // Base Crud methods
     Recipient save(Recipient rec);
     Recipient update(Recipient rec);
-    boolean delete(Recipient rec);
-    Recipient findById(Long id);
+    void delete(Long id);
+    Optional<Recipient> findById(Long id);
     List<Recipient> findAll();
 
     // business specific queries
