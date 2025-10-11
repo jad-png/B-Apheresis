@@ -27,8 +27,6 @@ public interface RecipientDao {
     List<Recipient> findBySituation(Situation situation);
     List<Recipient> findInsatisfiedRecipients();
 
-    // TODO: parameter donor blood type
-    List<Recipient> findCompatibleRecipients();
     boolean existsByCin(String cin);
     Long CountByState(State state);
 }

@@ -216,24 +216,44 @@ public class RecipientDaoImpl extends Loggable implements RecipientDao {
             List<Recipient> recipients = query.getResultList();
             logMethodExit("findInsatisfiedRecipients", recipients.size() + " recipients found");
             return recipients;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             logError("Error finding unsatisfied recipients", e);
             throw new RuntimeException("Failed to retrieve unsatisfied recipients", e);
         }
     }
 
     @Override
-    public List<Recipient> findCompatibleRecipients() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public boolean existsByCin(String cin) {
-        return false;
+        logMethodEntry("existsByCin", cin);
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT count(r) from Recipient r WHERE r.cin = :cin order by r.created_at desc", Long.class
+            );
+            query.setParameter("cin", cin);
+            Long count = query.getSingleResult();
+            boolean exists = count > 0;
+            logMethodExit("existsByCin", exists);
+            return exists;
+        } catch (Exception e) {
+            logError("Error checking recipient existence by CIN", e);
+            return false;
+        }
     }
 
     @Override
     public Long CountByState(State state) {
-        return 0L;
+        logMethodEntry("CountByState", state);
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(r) FROM Recipient r WHERE r.state = :state ORDER BY r.created_at desc", Long.class
+            );
+            query.setParameter("state", state);
+            Long count = query.getSingleResult();
+            logMethodExit("countByState", count);
+            return count;
+        } catch (Exception e) {
+            logError("Error counting recipients by state", e);
+            throw new RuntimeException("Failed to count recipients by state", e);
+        }
     }
 }
