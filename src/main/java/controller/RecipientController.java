@@ -1,6 +1,9 @@
 package controller;
 
 import dto.RecipientDTO;
+import entity.enums.BloodType;
+import entity.enums.Situation;
+import entity.enums.State;
 import service.impl.RecipientServiceImpl;
 import utils.Loggable;
 
@@ -71,6 +74,91 @@ public class RecipientController extends Loggable {
         } catch (Exception e) {
             logError("Error in getAllRecipients controller", e);
             throw new RuntimeException("Failed to retrieve recipients", e);
+        }
+    }
+
+    public List<RecipientDTO> getRecipientsByBloodType(String bloodType) {
+        logMethodEntry("getRecipientsByBloodType", bloodType);
+        try {
+            BloodType bt = BloodType.valueOf(bloodType.toUpperCase());
+            List<RecipientDTO> result = service.getRecipientsByBloodType(bt);
+            logMethodExit("getRecipientsByBloodType", result.size() + " recipients found");
+            return result;
+        } catch (IllegalArgumentException e) {
+            logError("Invalid blood type: " + bloodType, e);
+            throw new RuntimeException("Invalid blood type: " + bloodType);
+        } catch (Exception e) {
+            logError("Error in getRecipientsByBloodType controller", e);
+            throw new RuntimeException("Failed to retrieve recipients", e);
+        }
+    }
+
+    public List<RecipientDTO> getWaitingRecipients() {
+        logMethodEntry("getWaitingRecipients");
+        try {
+            List<RecipientDTO> result = service.getWaitingRecipients();
+            logMethodExit("getWaitingRecipients", result.size() + " recipients found");
+            return result;
+        } catch (Exception e) {
+            logError("Error in getWaitingRecipients controller", e);
+            throw new RuntimeException("Failed to retrieve waiting recipients", e);
+        }
+    }
+
+    public List<RecipientDTO> getRecipientsByState(String state) {
+        logMethodEntry("getRecipientsByState", state);
+        try {
+            State parsedState = State.valueOf(state.toUpperCase());
+            List<RecipientDTO> result = service.getRecipientByState(parsedState);
+            logMethodExit("getRecipientsByState", result.size() + " recipients found");
+            return result;
+        } catch (IllegalArgumentException e) {
+            logError("Invalid state: " + state, e);
+            throw new RuntimeException("Invalid recipient state: " + state);
+        } catch (Exception e) {
+            logError("Error in getRecipientsByState controller", e);
+            throw new RuntimeException("Failed to retrieve recipients by state", e);
+        }
+    }
+
+    public List<RecipientDTO> getRecipientsBySituation(String situation) {
+        logMethodEntry("getRecipientsBySituation", situation);
+        try {
+            Situation parsedSituation = Situation.valueOf(situation.toUpperCase());
+            List<RecipientDTO> result = service.getRecipientBySituation(parsedSituation);
+            logMethodExit("getRecipientsBySituation", result.size() + " recipients found");
+            return result;
+        } catch (IllegalArgumentException e) {
+            logError("Invalid situation: " + situation, e);
+            throw new RuntimeException("Invalid recipient situation: " + situation);
+        } catch (Exception e) {
+            logError("Error in getRecipientsBySituation controller", e);
+            throw new RuntimeException("Failed to retrieve recipients by situation", e);
+        }
+    }
+
+    public List<RecipientDTO> getRecipientsByPriority() {
+        logMethodEntry("getRecipientsByPriority");
+        try {
+            List<RecipientDTO> result = service.getRecipientsByPriority();
+            logMethodExit("getRecipientsByPriority", result.size() + " recipients found");
+            return result;
+        } catch (Exception e) {
+            logError("Error in getRecipientsByPriority controller", e);
+            throw new RuntimeException("Failed to retrieve prioritized recipients", e);
+        }
+    }
+
+    public long countByState(String state) {
+        logMethodEntry("countByState", state);
+        try {
+            State parsedState = State.valueOf(state.toUpperCase());
+            long count = service.countByState(parsedState);
+            logMethodExit("countByState", count);
+            return count;
+        } catch (Exception e) {
+            logError("Error in countByState controller", e);
+            throw new RuntimeException("Failed to count recipients by state", e);
         }
     }
 }
