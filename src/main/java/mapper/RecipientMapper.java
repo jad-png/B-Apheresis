@@ -10,7 +10,7 @@ public class RecipientMapper {
 
         RecipientDTO dto = new RecipientDTO();
         dto.setId(rec.getId());
-        dto.setFistName(rec.getFirstName());
+        dto.setFirstName(rec.getFirstName());
         dto.setLastName(rec.getLastName());
         dto.setCin(rec.getCin());
         dto.setBirthday(rec.getBirthday());
@@ -32,7 +32,7 @@ public class RecipientMapper {
 
         Recipient rec = new Recipient();
         rec.setId(dto.getId());
-        rec.setFirstName(dto.getFistName());
+        rec.setFirstName(dto.getFirstName());
         rec.setLastName(dto.getLastName());
         rec.setCin(dto.getCin());
         rec.setBirthday(dto.getBirthday());
@@ -43,7 +43,7 @@ public class RecipientMapper {
         rec.setCurrentBags(dto.getCurrentBags());
         rec.setState(dto.getState());
         rec.setSituation(dto.getSituation());
-        
+
         return rec;
     }
 }

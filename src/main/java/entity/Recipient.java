@@ -34,9 +34,8 @@ public class Recipient extends Account {
         this.state = State.WAITING;
     }
 
-    public Recipient(String firstName, String lastName, String cin, String phone,
-                     Date birthday, BloodType bloodType, Gender gender,
-                     Double weight, Situation situation) {
+    public Recipient(String firstName, String lastName, String cin,
+                     Date birthday, BloodType bloodType, Gender gender, Situation situation) {
         super(firstName, lastName, cin, birthday, gender, bloodType);
         this.situation = situation;
         this.currentBags = 0;
