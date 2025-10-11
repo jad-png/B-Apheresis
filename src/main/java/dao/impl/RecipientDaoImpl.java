@@ -146,6 +146,25 @@ public class RecipientDaoImpl extends Loggable implements RecipientDao {
 
     @Override
     public List<Recipient> findByPriority() {
-        return Collections.emptyList();
+        logMethodEntry("findByPriority");
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r " +
+                            "ORDER BY " +
+                            "CASE r.situation" +
+                            "  WHEN entity.enums.Situation.CRITICAL THEN 3 " +
+                            "  WHEN entity.enums.Situation.URGENT THEN 2 " +
+                            "  WHEN entity.enums.Situation.NORMAL THEN 1 " +
+                            " ELSE 0 END DESC, r.created_at DESC ",
+                    Recipient.class
+            );
+
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findByPriority", recipients.size() + " recipients found");
+            return recipients;
+        } catch (Exception e) {
+            logError("Error finding recipients by priority", e);
+            throw new RuntimeException("Failed to retrieve recipients by priority", e);
+        }
     }
 }
