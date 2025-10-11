@@ -3,7 +3,11 @@ package service.impl;
 import dao.interfaces.DonorDao;
 import dao.interfaces.RecipientDao;
 import dto.DonorDTO;
+import entity.Recipient;
 import entity.enums.BloodType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MatchingService {
     private final DonorDao donorDao;
@@ -12,6 +16,21 @@ public class MatchingService {
     public MatchingService(DonorDao donorDao, RecipientDao recipientDao) {
         this.donorDao = donorDao;
         this.recipientDao = recipientDao;
+    }
+
+    public List<Recipient> findCompatibleRecipients(BloodType donorBloodType) {
+        List<Recipient> waitingRecipients = recipientDao.findWaitingRecipients();
+        List<Recipient> compatibleRecipients = new ArrayList<>();
+
+        for (Recipient r : waitingRecipients) {
+            if (isCompatible(donorBloodType, r.getBloodType()) && !r.isSatisfied()) {
+                compatibleRecipients.add(r);
+            }
+        }
+
+        compatibleRecipients.sort((r1, r2) -> Integer.compare(r2.getPriorityLevel(), r1.getPriorityLevel()));
+
+        return compatibleRecipients;
     }
 
     private boolean isCompatible(BloodType donor, BloodType recipient) {
