@@ -4,6 +4,8 @@ import config.DIContainer;
 import dao.interfaces.RecipientDao;
 import entity.Recipient;
 import entity.enums.BloodType;
+import entity.enums.Situation;
+import entity.enums.State;
 import utils.Loggable;
 
 import javax.persistence.EntityManager;
@@ -166,5 +168,72 @@ public class RecipientDaoImpl extends Loggable implements RecipientDao {
             logError("Error finding recipients by priority", e);
             throw new RuntimeException("Failed to retrieve recipients by priority", e);
         }
+    }
+
+    @Override
+    public List<Recipient> findByState(State state) {
+        logMethodEntry("findByState", state);
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r WHERE r.state = :state order by r.created_at desc", Recipient.class
+            );
+
+            query.setParameter("state", state);
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findByState", recipients.size() + " recipients found");
+            return recipients;
+        } catch (Exception e) {
+            logError("Error finding recipients by state", e);
+            throw new RuntimeException("Failed to retrieve recipients by state", e);
+        }
+    }
+
+    @Override
+    public List<Recipient> findBySituation(Situation situation) {
+        logMethodEntry("findBySituation", situation);
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r WHERE r.situation = :situation order by r.created_at desc", Recipient.class
+            );
+
+            query.setParameter("situation", situation);
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findBySituation", recipients.size() + " recipients found");
+            return recipients;
+        } catch (Exception e) {
+            logError("Error finding recipients by situation", e);
+            throw new RuntimeException("Failed to retrieve recipients by situation", e);
+        }
+    }
+
+    @Override
+    public List<Recipient> findInsatisfiedRecipients() {
+        logMethodEntry("findInsatisfiedRecipients");
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r WHERE r.state = entity.enums.State.WAITING order by r.created_at desc ", Recipient.class
+            );
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findInsatisfiedRecipients", recipients.size() + " recipients found");
+            return recipients;
+        }  catch (Exception e) {
+            logError("Error finding unsatisfied recipients", e);
+            throw new RuntimeException("Failed to retrieve unsatisfied recipients", e);
+        }
+    }
+
+    @Override
+    public List<Recipient> findCompatibleRecipients() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean existsByCin(String cin) {
+        return false;
+    }
+
+    @Override
+    public Long CountByState(State state) {
+        return 0L;
     }
 }
