@@ -38,7 +38,7 @@ public class DonorDTO {
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getCin() { return cin; }
+    public String getCin()  { return cin; }
     public void setCin(String cin) { this.cin = cin; }
 
     public String getPhone() { return phone; }
