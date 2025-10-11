@@ -3,6 +3,7 @@ package dao.impl;
 import config.DIContainer;
 import dao.interfaces.RecipientDao;
 import entity.Recipient;
+import entity.enums.BloodType;
 import utils.Loggable;
 
 import javax.persistence.EntityManager;
@@ -107,5 +108,44 @@ public class RecipientDaoImpl extends Loggable implements RecipientDao {
             logError("Error listing all recipients", e);
             throw new RuntimeException("Failed to retrieve recipients", e);
         }
+    }
+
+    @Override
+    public List<Recipient> findByBloodType(BloodType bloodType) {
+        logMethodEntry("findByBloodType", bloodType);
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r WHERE r.blod_type = :blood_type ORDER BY r.created_at DESC", Recipient.class
+            );
+
+            query.setParameter("blood_type", bloodType);
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findByBloodType", recipients.size() + " recipients found");
+            return recipients;
+        } catch (Exception e) {
+            logError("Error finding recipients by blood type", e);
+            throw new RuntimeException("Failed to retrieve recipients by blood type", e);
+        }
+    }
+
+    @Override
+    public List<Recipient> findWaitingRecipients() {
+        logMethodEntry("findWaitingRecipients");
+        try {
+            TypedQuery<Recipient> query = em.createQuery(
+                    "SELECT r FROM Recipient r WHERE r.state = entity.enums.State.WAITING ORDER BY r.created_at DESC", Recipient.class
+            );
+            List<Recipient> recipients = query.getResultList();
+            logMethodExit("findWaitingRecipients", recipients.size() + " recipients found");
+            return recipients;
+        } catch (Exception e) {
+            logError("Error finding waiting recipients", e);
+            throw new RuntimeException("Failed to retrieve waiting recipients", e);
+        }
+    }
+
+    @Override
+    public List<Recipient> findByPriority() {
+        return Collections.emptyList();
     }
 }
