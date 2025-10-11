@@ -3,6 +3,9 @@ package service.impl;
 import dao.interfaces.RecipientDao;
 import dto.RecipientDTO;
 import entity.Recipient;
+import entity.enums.BloodType;
+import entity.enums.Situation;
+import entity.enums.State;
 import mapper.RecipientMapper;
 import service.interfaces.RecipientService;
 import utils.Loggable;
@@ -12,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 public class RecipientServiceImpl extends Loggable implements RecipientService {
     private final RecipientDao dao;
@@ -78,5 +82,66 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
                 .collect(Collectors.toList());
         logMethodExit("getAllRecipients", list);
         return list;
+    }
+
+    @Override
+    public List<RecipientDTO> getRecipientByState(State state) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<RecipientDTO> getRecipientBySituation(Situation situation) {
+        logMethodEntry("getRecipientsByState", situation);
+        return dao.findBySituation(situation).stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RecipientDTO> getWaitingRecipients() {
+        logMethodEntry("getWaitingRecipients");
+        return dao.findWaitingRecipients().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RecipientDTO> getRecipientsByBloodType(BloodType bloodType) {
+        logMethodEntry("getRecipientsByBloodType", bloodType);
+        return dao.findByBloodType(bloodType).stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RecipientDTO> getRecipientsByPriority() {
+        logMethodEntry("getRecipientsByPriority");
+        return dao.findByPriority().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RecipientDTO> getUnsatisfiedRecipients() {
+        logMethodEntry("getUnsatisfiedRecipients");
+        return dao.findInsatisfiedRecipients().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsByCin(String cin) {
+        logMethodEntry("existsByCin", cin);
+        boolean exists = dao.existsByCin(cin);
+        logMethodExit("existsByCin", exists);
+        return exists;
+    }
+
+    @Override
+    public Long countByState(State state) {
+        logMethodEntry("countByState", state);
+        Long count = dao.CountByState(state);
+        logMethodExit("countByState", count);
+        return count;
     }
 }
