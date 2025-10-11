@@ -20,5 +20,14 @@ public interface RecipientDao {
     List<Recipient> findByBloodType(BloodType bloodType);
     List<Recipient> findWaitingRecipients();
     List<Recipient> findByPriority(); // listing by priority :// CRI > URG > NOR
-    
+
+    // advanced queries
+    List<Recipient> findByState(State state);
+    List<Recipient> findBySituation(Situation situation);
+    List<Recipient> findInsatisfiedRecipients();
+
+    // TODO: parameter donor blood type
+    List<Recipient> findCompatibleRecipients();
+    boolean existsByCin(String cin);
+    Long CountByState(State state);
 }
