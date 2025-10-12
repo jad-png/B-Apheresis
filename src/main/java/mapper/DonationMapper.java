@@ -15,5 +15,15 @@ public class DonationMapper {
         return dto;
     }
 
-    
+    public Donation toEntity (DonationDTO dto) {
+        if (dto == null) return null;
+
+        Donation donation = new Donation();
+
+        donation.setId(dto.getId());
+        donation.getDonor().setId(dto.getDonorId());
+        donation.getRecipient().setId(dto.getRecipientId());
+
+        return donation;
+    }
 }
