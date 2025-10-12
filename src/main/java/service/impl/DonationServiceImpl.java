@@ -1,6 +1,7 @@
 package service.impl;
 
 import dao.impl.DonationDaoImpl;
+import dao.interfaces.DonationDao;
 import dto.DonationDTO;
 import entity.Donation;
 import mapper.DonationMapper;
@@ -13,10 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DonationServiceImpl extends Loggable implements DonationService {
-    private final DonationDaoImpl dao;
+    private final DonationDao dao;
     private final DonationMapper mapper;
 
-    public DonationServiceImpl(DonationDaoImpl dao, DonationMapper mapper) {
+    public DonationServiceImpl(DonationDao dao, DonationMapper mapper) {
         this.dao = dao;
         this.mapper = mapper;
     }

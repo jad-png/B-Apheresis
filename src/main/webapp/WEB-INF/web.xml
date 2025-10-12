@@ -10,6 +10,10 @@
 
   <display-name>B-Apheresis</display-name>
 
+    <listener>
+        <listener-class>utils.bootstrap.AppBootstrap</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>helloServlet</servlet-name>
         <servlet-class>servlets.HelloServlet</servlet-class>
