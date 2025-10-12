@@ -15,7 +15,7 @@
         <class>entity.Account</class>
         <class>entity.Recipient</class>
         <class>entity.Donor</class>
-
+        <class>entity.Donation</class>
         <!-- Database configuration -->
         <properties>
             <!-- JDBC connection properties -->
