@@ -16,5 +16,12 @@ public class Donation {
     @ManyToOne
     @JoinColumn(name = "reviewer_id")
     private Account recipient;
-    
+
+    public Donation(Account donor, Account recipient) {
+        this.donor = donor;
+        this.recipient = recipient;
+    }
+
+    public Donation() {}
+
 }
