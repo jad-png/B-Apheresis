@@ -24,4 +24,13 @@ public class Donation {
 
     public Donation() {}
 
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Account getDonor() { return donor; }
+    public void setDonor(Account donor) { this.donor = donor; }
+
+    public Account getRecipient() { return recipient; }
+    public void setRecipient(Account recipient) { this.recipient = recipient; }
 }
