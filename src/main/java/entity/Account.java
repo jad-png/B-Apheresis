@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-abstract class Account extends Loggable {
+public abstract class Account extends Loggable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

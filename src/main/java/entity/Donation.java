@@ -14,7 +14,7 @@ public class Donation {
     private Account donor;
 
     @ManyToOne
-    @JoinColumn(name = "reviewer_id")
+    @JoinColumn(name = "recipient_id")
     private Account recipient;
 
     public Donation(Account donor, Account recipient) {
