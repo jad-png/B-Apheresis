@@ -1,0 +1,41 @@
+package integration;
+
+import dao.impl.DonorDaoImpl;
+import dao.interfaces.DonorDao;
+import dto.DonorDTO;
+import entity.enums.BloodType;
+import mapper.DonorMapper;
+import org.junit.jupiter.api.Test;
+import service.impl.DonorServiceImpl;
+import service.interfaces.DonorService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class DonorServiceIntegrationTest extends IntegrationTestBase {
+
+    @Test
+    void testCreateAndRetrieveDonor() {
+        DonorDao dao = new DonorDaoImpl();
+        DonorMapper mapper = new DonorMapper();
+        DonorService service = new DonorServiceImpl(dao, mapper);
+
+        DonorDTO dto = new DonorDTO();
+        dto.setCin("HH421");
+        dto.setFirstName("Test");
+        dto.setLastName("Test");
+        dto.setBloodType(BloodType.A_POS);
+
+        DonorDTO saved = service.createDonor(dto);
+        assertThat(saved.getId()).isNotNull();
+
+        List<DonorDTO> allDonors = service.getAllDonors();
+        assertThat(allDonors).hasSize(1);
+
+        Optional<DonorDTO> donor = service.getDonorById(saved.getId());
+        assertThat(donor).isPresent();
+        assertThat(donor.get().getFirstName()).isEqualTo(saved.getFirstName());
+    }
+}

@@ -3,6 +3,7 @@ package integration;
 import config.DIContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,8 +14,7 @@ public abstract class IntegrationTestBase {
 
     @BeforeEach
     void setup () {
-        emf = DIContainer.getInstance().getBean(EntityManagerFactory.class);
-        em = emf.createEntityManager();
+        em = JPAUtils.createEM();
         em.getTransaction().begin();
     }
 

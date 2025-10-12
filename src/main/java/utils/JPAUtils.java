@@ -9,7 +9,7 @@ public class JPAUtils {
 
     static {
         try {
-            emf = Persistence.createEntityManagerFactory("B-ApheresisPU");
+            emf = Persistence.createEntityManagerFactory("testPU");
         } catch (Exception e) {
             System.err.println("EntityManagerFactory initialization failed: " + e.getMessage());
             throw new ExceptionInInitializerError(e);
