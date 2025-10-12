@@ -1,6 +1,5 @@
 package dto;
 
-import
 
 public class DonationDTO {
     private Long id;
