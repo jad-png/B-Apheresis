@@ -5,6 +5,7 @@ import entity.enums.Gender;
 import entity.enums.MedicalCondition;
 import entity.enums.Status;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class DonorDTO {
@@ -13,7 +14,7 @@ public class DonorDTO {
     private String lastName;
     private String cin;
     private String phone;
-    private Date birthday;
+    private LocalDate birthday;
     private BloodType bloodType;
     private Gender gender;
     private Double weight;
@@ -44,8 +45,8 @@ public class DonorDTO {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
-    public Date getBirthday() { return birthday; }
-    public void setBirthday(Date birthday) { this.birthday = birthday; }
+    public LocalDate getBirthday() { return birthday; }
+    public void setBirthday(LocalDate birthday) { this.birthday = birthday; }
 
     public BloodType getBloodType() { return bloodType; }
     public void setBloodType(BloodType bloodType) { this.bloodType = bloodType; }

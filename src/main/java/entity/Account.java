@@ -37,8 +37,7 @@ public abstract class Account extends Loggable {
     private Gender gender;
 
     @Column(name = "birthday", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,7 +47,7 @@ public abstract class Account extends Loggable {
         this.created_at = new Date();
     }
 
-    public Account(String firstName, String lastName, String cin, Date birthday, Gender gender, BloodType bloodType) {
+    public Account(String firstName, String lastName, String cin, LocalDate birthday, Gender gender, BloodType bloodType) {
         this();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,12 +63,8 @@ public abstract class Account extends Loggable {
     }
 
     public int calculateAge() {
-        LocalDate birthDate = birthday.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-
-        return Period.between(birthDate, currentDate).getYears();
+        if (birthday == null) return 0;
+        return Period.between(birthday, LocalDate.now()).getYears();
     }
 
     public boolean validatePersonalInfo() {
@@ -92,8 +87,8 @@ public abstract class Account extends Loggable {
     public String getCin() { return cin; }
     public void setCin(String cin) { this.cin = cin; }
 
-    public Date getBirthday() { return birthday; }
-    public void setBirthday(Date birthday) { this.birthday = birthday; }
+    public LocalDate getBirthday() { return birthday; }
+    public void setBirthday(LocalDate birthday) { this.birthday = birthday; }
 
     public BloodType getBloodType() { return blod_type; }
     public void setBloodType(BloodType bloodType) { this.blod_type = bloodType; }

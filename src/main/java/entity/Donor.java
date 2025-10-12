@@ -6,6 +6,7 @@ import entity.enums.MedicalCondition;
 import entity.enums.Status;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public class Donor extends Account {
     }
 
     public Donor(String firstName, String lastName, String cin, String phone,
-                 Date birthday, BloodType bloodType, Gender gender,
+                 LocalDate birthday, BloodType bloodType, Gender gender,
                  Double weight, MedicalCondition medicalCondition) {
         super(firstName, lastName, cin, birthday, gender, bloodType);
         this.weight = weight;

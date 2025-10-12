@@ -17,9 +17,8 @@ import java.util.Optional;
 public class DonorDaoImpl extends Loggable implements DonorDao {
     private final EntityManager em;
 
-    public DonorDaoImpl() {
-        EntityManagerFactory emf = DIContainer.getInstance().getBean(EntityManagerFactory.class);
-        this.em = emf.createEntityManager();
+    public DonorDaoImpl(EntityManager em) {
+        this.em = em;
     }
 
     // Basic Crud queries

@@ -19,9 +19,8 @@ import java.util.Optional;
 public class RecipientDaoImpl extends Loggable implements RecipientDao {
     private final EntityManager em;
 
-    public RecipientDaoImpl() {
-        EntityManagerFactory emf = DIContainer.getInstance().getBean(EntityManagerFactory.class);
-        this.em = emf.createEntityManager();
+    public RecipientDaoImpl(EntityManager em) {
+        this.em = em;
     }
 
 

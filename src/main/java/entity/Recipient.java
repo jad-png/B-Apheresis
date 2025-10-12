@@ -3,6 +3,7 @@ package entity;
 import entity.enums.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Recipient extends Account {
     }
 
     public Recipient(String firstName, String lastName, String cin,
-                     Date birthday, BloodType bloodType, Gender gender, Situation situation) {
+                     LocalDate birthday, BloodType bloodType, Gender gender, Situation situation) {
         super(firstName, lastName, cin, birthday, gender, bloodType);
         this.situation = situation;
         this.currentBags = 0;

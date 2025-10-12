@@ -18,6 +18,7 @@ import service.interfaces.DonorService;
 import service.interfaces.RecipientService;
 import utils.JPAUtils;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -25,17 +26,23 @@ import javax.servlet.ServletContextListener;
 public class AppBootstrap implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        // em for dao's constructor
+        EntityManagerFactory emf = JPAUtils.getEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
+
         DIContainer injector = DIContainer.getInstance();
 
-        DonorDao donorDao = new DonorDaoImpl();
+
+
+        DonorDao donorDao = new DonorDaoImpl(em);
         DonorMapper donorMapper = new DonorMapper();
         DonorService donorService = new DonorServiceImpl(donorDao, donorMapper);
 
-        RecipientDao recipientDao = new RecipientDaoImpl();
+        RecipientDao recipientDao = new RecipientDaoImpl(em);
         RecipientMapper recipientMapper = new RecipientMapper();
         RecipientService recipientService = new RecipientServiceImpl(recipientDao, recipientMapper);
 
-        DonationDao donationDao = new DonationDaoImpl();
+        DonationDao donationDao = new DonationDaoImpl(em);
         DonationMapper donationMapper = new DonationMapper();
         DonationService donationService = new DonationServiceImpl(donationDao, donationMapper);
 

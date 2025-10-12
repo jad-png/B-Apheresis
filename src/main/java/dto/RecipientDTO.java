@@ -2,6 +2,7 @@ package dto;
 
 import entity.enums.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class RecipientDTO {
     private String cin;
     private BloodType bloodType;
     private Gender gender;
-    private Date birthday;
+    private LocalDate birthday;
     private Integer requiredBags;
     private Integer currentBags;
     private State state;
@@ -41,8 +42,8 @@ public class RecipientDTO {
     public Gender getGender() { return gender; }
     public void setGender(Gender gender) { this.gender = gender; }
 
-    public Date getBirthday() { return birthday; }
-    public void setBirthday(Date birthday) { this.birthday = birthday; }
+    public LocalDate getBirthday() { return birthday; }
+    public void setBirthday(LocalDate birthday) { this.birthday = birthday; }
 
     // Recipient attributes
     public Integer getRequiredBags() { return requiredBags; }

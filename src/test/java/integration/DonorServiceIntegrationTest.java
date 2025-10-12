@@ -4,11 +4,15 @@ import dao.impl.DonorDaoImpl;
 import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.enums.BloodType;
+import entity.enums.Gender;
 import mapper.DonorMapper;
 import org.junit.jupiter.api.Test;
 import service.impl.DonorServiceImpl;
 import service.interfaces.DonorService;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +22,7 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
 
     @Test
     void testCreateAndRetrieveDonor() {
-        DonorDao dao = new DonorDaoImpl();
+        DonorDao dao = new DonorDaoImpl(em);
         DonorMapper mapper = new DonorMapper();
         DonorService service = new DonorServiceImpl(dao, mapper);
 
@@ -27,6 +31,8 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
         dto.setFirstName("Test");
         dto.setLastName("Test");
         dto.setBloodType(BloodType.A_POS);
+        dto.setGender(Gender.MALE);
+        dto.setBirthday(LocalDate.of(1995, 5, 20));
 
         DonorDTO saved = service.createDonor(dto);
         assertThat(saved.getId()).isNotNull();

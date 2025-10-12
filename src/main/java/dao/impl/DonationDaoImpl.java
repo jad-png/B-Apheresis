@@ -15,9 +15,8 @@ import java.util.Optional;
 public class DonationDaoImpl extends Loggable implements DonationDao {
     private final EntityManager em;
 
-    public DonationDaoImpl() {
-        EntityManagerFactory emf = DIContainer.getInstance().getBean(EntityManagerFactory.class);
-        em = emf.createEntityManager();
+    public DonationDaoImpl(EntityManager em) {
+        this.em = em;
     }
 
 
