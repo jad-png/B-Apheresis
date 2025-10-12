@@ -6,6 +6,8 @@ import javax.persistence.EntityManagerFactory;
 
 public class Main {
     public static void main(String[] args) {
-        JPAUtils.getEntityManagerFactory().close(); // Trigger Hibernate and shut down
+        EntityManager em = JPAUtils.getEntityManagerFactory().createEntityManager();
+        System.out.println("✅ Hibernate is working. EntityManager opened successfully.");
+        em.close();
     }
 }
