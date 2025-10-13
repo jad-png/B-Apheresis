@@ -13,7 +13,7 @@ public interface RecipientService {
     // basic crud methods
     RecipientDTO saveRecipient(RecipientDTO dto);
     RecipientDTO updateRecipient(RecipientDTO dto);
-    void deleteRecipient(Long id);
+    boolean deleteRecipient(Long id);
     Optional<RecipientDTO> getRecipient(Long id);
     List<RecipientDTO> getAllRecipients();
 

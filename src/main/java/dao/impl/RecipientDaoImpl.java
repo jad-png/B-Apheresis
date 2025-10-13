@@ -2,6 +2,7 @@ package dao.impl;
 
 import config.DIContainer;
 import dao.interfaces.RecipientDao;
+import entity.Account;
 import entity.Recipient;
 import entity.enums.BloodType;
 import entity.enums.Situation;
@@ -46,13 +47,16 @@ public class RecipientDaoImpl extends Loggable implements RecipientDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         logMethodEntry("delete", id);
         Recipient r = em.find(Recipient.class, id);
         if (r != null) {
             em.remove(r);
+            em.remove(em.find(Account.class, id));
+            return true;
         }
         logMethodExit("delete", id);
+        return false;
     }
 
     @Override

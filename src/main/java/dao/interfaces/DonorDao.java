@@ -13,7 +13,7 @@ public interface DonorDao {
     Optional<Donor> findById(Long id);
     List<Donor> lsAll();
     Donor update(Donor donor);
-    void delete(Long id);
+    boolean delete(Long id);
 
     // business apecific queries
     List<Donor> findByStatus(Status status);

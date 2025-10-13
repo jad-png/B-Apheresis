@@ -70,13 +70,15 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         logMethodEntry("delete", id);
         Donor donor = em.find(Donor.class, id);
         if (donor != null) {
             em.remove(donor);
+            return true;
         }
         logMethodExit("delete", id);
+        return false;
     }
 
     // Business specific queries

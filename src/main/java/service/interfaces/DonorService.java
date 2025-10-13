@@ -18,7 +18,7 @@ public interface DonorService {
     public List<DonorDTO> getAllDonors();
     public Optional<DonorDTO> getDonorById(Long id);
     public DonorDTO updateDonor(DonorDTO donorDTO);
-    public void deleteDonor(Long id);
+    public boolean deleteDonor(Long id);
 
     public List<DonorDTO> getAvailableDonors();
     public Optional<DonorDTO> getEligibleDonors();

@@ -11,17 +11,25 @@ import service.interfaces.RecipientService;
 import utils.Loggable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sound.sampled.ReverbType;
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Transactional
 public class RecipientServiceImpl extends Loggable implements RecipientService {
     private final RecipientDao dao;
     private final RecipientMapper mapper;
-    private final EntityManager em;
+
+    private EntityManager em;
+
+    public RecipientServiceImpl(RecipientDao dao, RecipientMapper mapper) {
+        this.dao = dao;
+        this.mapper = mapper;
+    }
 
     public RecipientServiceImpl(RecipientDao dao, RecipientMapper mapper, EntityManager em) {
         this.dao = dao;
@@ -34,45 +42,33 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     public RecipientDTO saveRecipient(RecipientDTO dto) {
         logMethodEntry("saveRecipient", dto);
         try {
-            if (!em.getTransaction().isActive()) {
-                em.getTransaction().begin();
-            }
-
             Recipient r = mapper.toEntity(dto);
             r.calculateRequiredBags();
             r.updateState();
 
             Recipient saved = dao.save(r);
-
-            em.getTransaction().commit();
-
             RecipientDTO recDto = mapper.toDto(saved);
+
             logMethodExit("saveRecipient", recDto);
             return recDto;
         } catch (Exception e) {
             logError("saveRecipient", e);
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
             throw new RuntimeException("Error saving recipient", e);
         }
     }
+
 
     @Override
     public RecipientDTO updateRecipient(RecipientDTO dto) {
         logMethodEntry("updateRecipient", dto);
         try {
-            if (!em.getTransaction().isActive()) {
-                em.getTransaction().begin();
-            }
-
             Recipient r = mapper.toEntity(dto);
             r.calculateRequiredBags();
             r.updateState();
 
             Recipient saved = dao.save(r);
-
-            em.getTransaction().commit();
-
             RecipientDTO recDto = mapper.toDto(saved);
+
             logMethodExit("updateRecipient", recDto);
             return recDto;
         } catch (Exception e) {
@@ -83,22 +79,22 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     }
 
     @Override
-    public void deleteRecipient(Long id) {
+    public boolean deleteRecipient(Long id) {
         logMethodEntry("deleteRecipient", id);
         try {
-            if (!em.getTransaction().isActive()) {
-                em.getTransaction().begin();
+            Optional<Recipient> r = dao.findById(id);
+
+            if (!r.isPresent()) {
+                return false;
             }
 
             dao.delete(id);
 
-            em.getTransaction().commit();
-
             logMethodExit("deleteRecipient", id);
+            return true;
         } catch (Exception e) {
             logError("deleteRecipient", e);
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            throw new RuntimeException("Error deleting recipient", e);
+            return false;
         }
     }
 

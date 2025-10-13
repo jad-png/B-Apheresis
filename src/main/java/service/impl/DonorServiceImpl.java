@@ -3,6 +3,7 @@ package service.impl;
 import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.Donor;
+import entity.Recipient;
 import entity.enums.BloodType;
 import mapper.DonorMapper;
 import service.interfaces.DonorService;
@@ -10,14 +11,21 @@ import utils.Loggable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 public class DonorServiceImpl extends Loggable implements DonorService {
     private final DonorDao dao;
     private final DonorMapper mapper;
-    private final EntityManager em;
+    private EntityManager em;
+
+    public DonorServiceImpl(DonorDao dao, DonorMapper mapper) {
+        this.dao = dao;
+        this.mapper = mapper;
+    }
 
     public DonorServiceImpl(DonorDao dao, DonorMapper mapper, EntityManager em) {
         this.dao = dao;
@@ -58,26 +66,17 @@ public class DonorServiceImpl extends Loggable implements DonorService {
             logMethodExit("createDonor", "DTO is null");
             throw new IllegalArgumentException("DonorDTO cannot be null");
         }
-
-        EntityTransaction tx = em.getTransaction();
-        try {
-            if (!tx.isActive()) {
-                tx.begin();
-            }
-
+        try
+        {
             Donor donor = mapper.toEntity(dto);
             updateDonorStatus(donor);
             Donor saved = dao.save(donor);
 
-            tx.commit();
 
             DonorDTO result = toDTOWithEligibility(saved);
             logMethodExit("createDonor", result);
             return result;
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             logError("Failed to create donor", e);
             throw new RuntimeException("Failed to create donor", e);
         }
@@ -86,7 +85,6 @@ public class DonorServiceImpl extends Loggable implements DonorService {
     @Override
     public List<DonorDTO> getAllDonors() {
         logMethodEntry("getAllDonors");
-
         try {
             List<Donor> donors = dao.lsAll();
             List<DonorDTO> result = donors.stream()
@@ -103,7 +101,6 @@ public class DonorServiceImpl extends Loggable implements DonorService {
     @Override
     public Optional<DonorDTO> getDonorById(Long id) {
         logMethodEntry("getDonorById", id);
-
         try {
             Optional<Donor> donorOpt = dao.findById(id);
             Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
@@ -123,62 +120,37 @@ public class DonorServiceImpl extends Loggable implements DonorService {
         if (donorDTO == null || donorDTO.getId() == null) {
             throw new IllegalArgumentException("DonorDTO or its ID cannot be null.");
         }
-
-        EntityTransaction tx = em.getTransaction();
         try {
-            if (!tx.isActive()) {
-                tx.begin();
-            }
             Donor donor = mapper.toEntity(donorDTO);
             updateDonorStatus(donor);
             Donor updated = dao.update(donor);
-
-            tx.commit();
 
             DonorDTO result = toDTOWithEligibility(updated);
             logMethodExit("updateDonor", result);
             return result;
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             logError("Failed to update donor", e);
             throw new RuntimeException("Failed to update donor", e);
         }
     }
 
     @Override
-    public void deleteDonor(Long id) {
+    public boolean deleteDonor(Long id) {
         logMethodEntry("deleteDonor", id);
 
-        EntityTransaction tx = em.getTransaction();
-        boolean isNewTransaction = false;
-
         try {
-            if (!tx.isActive()) {
-                tx.begin();
 
-            }
+            Optional<Donor> donor = dao.findById(id);
 
-            if (id == null) {
-                logMethodExit("deleteDonor", "ID is null");
-            }
-            dao.delete(id);
-            em.flush();
-            em.clear();
+           if (donor == null) {
+               return false;
+           }
 
-            if (isNewTransaction) {
-                tx.commit();
-                isNewTransaction = true;
-            }
-
-            logMethodExit("deleteDonor");
+           dao.delete(donor.get().getId());
+           return true;
         } catch (Exception e) {
-            if (tx.isActive() && isNewTransaction) {
-                tx.rollback();
-            }
             logError("Failed to delete donor", e);
-            throw new RuntimeException("Failed to delete donor", e);
+            return false;
         }
     }
 

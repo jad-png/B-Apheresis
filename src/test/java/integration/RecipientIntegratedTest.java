@@ -54,7 +54,7 @@ public class RecipientIntegratedTest extends IntegrationTestBase {
         RecipientService service = new RecipientServiceImpl(dao, mapper, em);
 
         RecipientDTO dto = new RecipientDTO();
-        dto.setCin("CC987");
+        dto.setCin("HH123");
         dto.setFirstName("younes");
         dto.setLastName("Ben Said");
         dto.setBloodType(BloodType.O_NEG);

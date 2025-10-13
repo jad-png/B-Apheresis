@@ -13,7 +13,7 @@ public interface RecipientDao {
     // Base Crud methods
     Recipient save(Recipient rec);
     Recipient update(Recipient rec);
-    void delete(Long id);
+    boolean delete(Long id);
     Optional<Recipient> findById(Long id);
     List<Recipient> findAll();
 
