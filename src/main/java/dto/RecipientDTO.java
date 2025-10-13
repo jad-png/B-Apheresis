@@ -14,8 +14,8 @@ public class RecipientDTO {
     private BloodType bloodType;
     private Gender gender;
     private LocalDate birthday;
-    private Integer requiredBags;
-    private Integer currentBags;
+    private int requiredBags;
+    private int currentBags;
     private State state;
     private Situation situation;
     private List<DonorDTO> donors;
@@ -46,11 +46,11 @@ public class RecipientDTO {
     public void setBirthday(LocalDate birthday) { this.birthday = birthday; }
 
     // Recipient attributes
-    public Integer getRequiredBags() { return requiredBags; }
-    public void setRequiredBags(Integer requiredBags) { this.requiredBags = requiredBags; }
+    public int getRequiredBags() { return requiredBags; }
+    public void setRequiredBags(int requiredBags) { this.requiredBags = requiredBags; }
 
-    public Integer getCurrentBags() { return currentBags; }
-    public void setCurrentBags(Integer currentBags) { this.currentBags = currentBags; }
+    public int getCurrentBags() { return currentBags; }
+    public void setCurrentBags(int currentBags) { this.currentBags = currentBags; }
 
     public State getState() { return state; }
     public void setState(State state) { this.state = state; }

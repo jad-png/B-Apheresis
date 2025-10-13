@@ -34,7 +34,9 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     public RecipientDTO saveRecipient(RecipientDTO dto) {
         logMethodEntry("saveRecipient", dto);
         try {
-            em.getTransaction().begin();
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
 
             Recipient r = mapper.toEntity(dto);
             r.calculateRequiredBags();
@@ -58,7 +60,9 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     public RecipientDTO updateRecipient(RecipientDTO dto) {
         logMethodEntry("updateRecipient", dto);
         try {
-            em.getTransaction().begin();
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
 
             Recipient r = mapper.toEntity(dto);
             r.calculateRequiredBags();
@@ -82,7 +86,9 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     public void deleteRecipient(Long id) {
         logMethodEntry("deleteRecipient", id);
         try {
-            em.getTransaction().begin();
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
 
             dao.delete(id);
 

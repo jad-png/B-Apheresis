@@ -14,10 +14,10 @@ import java.util.List;
 public class Recipient extends Account {
 
     @Column(name = "required_bags")
-    private Integer requiredBags;
+    private int requiredBags;
 
     @Column(name = "current_bags")
-    private Integer currentBags;
+    private int currentBags;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
@@ -50,18 +50,22 @@ public class Recipient extends Account {
 
     // busineess
     public void calculateRequiredBags() {
-        switch (situation) {
-            case CRITICAL:
-                this.requiredBags = 4;
-                break;
-            case URGENT:
-                this.requiredBags = 3;
-                break;
-            case NORMAL:
-                this.requiredBags = 1;
-                break;
-            default:
-                this.requiredBags = 1;
+        if (situation == null) {
+            this.requiredBags = 1; // safe default
+        } else {
+            switch (situation) {
+                case CRITICAL:
+                    this.requiredBags = 4;
+                    break;
+                case URGENT:
+                    this.requiredBags = 3;
+                    break;
+                case NORMAL:
+                    this.requiredBags = 1;
+                    break;
+                default:
+                    this.requiredBags = 1;
+            }
         }
         updateState();
     }
