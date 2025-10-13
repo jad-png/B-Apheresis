@@ -25,26 +25,13 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     @Override
     public Donor save(Donor donor) {
         logMethodEntry("save", donor);
-        EntityTransaction tx = em.getTransaction();
-
-        try {
-            if (!tx.isActive()) { tx.begin(); }
-
-                if (donor.getId() == null) {
-                em.persist(donor);
-            } else {
-                donor = em.merge(donor);
-            }
-            tx.commit();
-            logMethodExit("save", donor);
-            return donor;
-        } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
-            logError("Error saving donor", e);
-            throw new RuntimeException("Failed to save donor", e);
+        if (donor.getId() == null) {
+            em.persist(donor);
+        } else {
+            donor = em.merge(donor);
         }
+        logMethodExit("save", donor);
+        return donor;
     }
 
     @Override
@@ -64,11 +51,9 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     public List<Donor> lsAll() {
         logMethodEntry("lsAll");
         try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d", Donor.class
-            );
+            TypedQuery<Donor> query = em.createQuery("SELECT d FROM Donor d", Donor.class);
             List<Donor> donors = query.getResultList();
-            logMethodExit("findAll", donors.size() + " donors found");
+            logMethodExit("lsAll", donors.size() + " donors found");
             return donors;
         } catch (Exception e) {
             logError("Error finding all donors", e);
@@ -79,223 +64,147 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
     @Override
     public Donor update(Donor donor) {
         logMethodEntry("update", donor);
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Donor updatedDonor = em.merge(donor);
-            tx.commit();
-            logMethodExit("update", updatedDonor);
-            return updatedDonor;
-        } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
-            logError("Error updating donor", e);
-            throw new RuntimeException("Failed to update donor", e);
-        }
+        Donor updatedDonor = em.merge(donor);
+        logMethodExit("update", updatedDonor);
+        return updatedDonor;
     }
 
     @Override
     public void delete(Long id) {
         logMethodEntry("delete", id);
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Donor donor = em.find(Donor.class, id);
-            if (donor != null) {
-                em.remove(donor);
-            }
-            tx.commit();
-            logMethodExit("delete", id);
-        } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
-            logError("Error deleting donor", e);
-            throw new RuntimeException("Failed to delete donor", e);
+        Donor donor = em.find(Donor.class, id);
+        if (donor != null) {
+            em.remove(donor);
         }
+        logMethodExit("delete", id);
     }
 
     // Business specific queries
     @Override
     public List<Donor> findByStatus(Status status) {
         logMethodEntry("findByStatus", status);
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.status = :status ORDER BY d.created_at DESC", Donor.class
-            );
-            query.setParameter("status", status);
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findByStatus", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding donors by status", e);
-            throw new RuntimeException("Failed to retrieve donors by status", e);
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.status = :status ORDER BY d.created_at DESC", Donor.class
+        );
+        query.setParameter("status", status);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findByStatus", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public List<Donor> findByBloodType(BloodType bloodType) {
         logMethodEntry("findByBloodType", bloodType);
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.blod_type = :bloodType ORDER BY d.created_at DESC", Donor.class);
-            query.setParameter("bloodType", bloodType);
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findByBloodType", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding donors by blood type", e);
-            throw new RuntimeException("Failed to retrieve donors by blood type", e);
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.blod_type = :bloodType ORDER BY d.created_at DESC", Donor.class);
+        query.setParameter("bloodType", bloodType);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findByBloodType", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public List<Donor> findByMedicalCondition(String condition) {
         logMethodEntry("findByMedicalCondition", condition);
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.mdCondition = :condition ORDER BY d.created_at DESC", Donor.class);
-            query.setParameter("condition", condition);
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findByMedicalCondition", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding donors by medical condition", e);
-            throw new RuntimeException("Failed to retrieve donors by medical condition", e);
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.mdCondition = :condition ORDER BY d.created_at DESC", Donor.class);
+        query.setParameter("condition", condition);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findByMedicalCondition", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public Optional<Donor> findByCin(String cin) {
         logMethodEntry("findByCin", cin);
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.cin = :cin", Donor.class);
-            query.setParameter("cin", cin);
-            Donor donor = query.getResultStream().findFirst().orElse(null);
-            logMethodExit("findByCin", donor);
-            return Optional.ofNullable(donor);
-        } catch (Exception e) {
-            logError("Error finding donor by CIN", e);
-            return Optional.empty();
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.cin = :cin", Donor.class);
+        query.setParameter("cin", cin);
+        Donor donor = query.getResultStream().findFirst().orElse(null);
+        logMethodExit("findByCin", donor);
+        return Optional.ofNullable(donor);
     }
 
     @Override
     public List<Donor> findEligibleDonors() {
         logMethodEntry("findEligibleDonors");
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
-                            "ORDER BY d.created_at DESC", Donor.class);
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findEligibleDonors", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding eligible donors", e);
-            throw new RuntimeException("Failed to retrieve eligible donors", e);
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                        "ORDER BY d.created_at DESC", Donor.class);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findEligibleDonors", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public List<Donor> findAvailableDonors() {
         logMethodEntry("findAvailableDonors");
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
-                            "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class);
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findAvailableDonors", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding available donors", e);
-            throw new RuntimeException("Failed to retrieve available donors", e);
-        }
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                        "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findAvailableDonors", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public List<Donor> findByRecipient(Long recipientId) {
         logMethodEntry("findByRecipient", recipientId);
-        try {
-            TypedQuery<Donor> query = em.createQuery("SELECT d FROM Donor d WHERE d.recipient.id = :recipientId ORDER BY d.created_at DESC", Donor.class);
-            query.setParameter("recipientId", recipientId);
-            List<Donor> donors =  query.getResultList();
-            logMethodExit("findByRecipient", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding donors by recipient", e);
-            throw new RuntimeException("Failed to retrieve donors by recipient", e);
-        }
+        TypedQuery<Donor> query = em.createQuery("SELECT d FROM Donor d WHERE d.recipient.id = :recipientId ORDER BY d.created_at DESC", Donor.class);
+        query.setParameter("recipientId", recipientId);
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findByRecipient", donors.size() + " donors found");
+        return donors;
     }
 
     // Advanced queries
     @Override
     public List<Donor> findCompatibleDonors(BloodType recipientBloodType) {
         logMethodEntry("findCompatibleDonors", recipientBloodType);
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
-                            "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
-            );
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.status = entity.enums.Status.AVAILABLE " +
+                        "AND d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
+        );
 
-            List<Donor> donors = query.getResultList();
-            logMethodExit("findCompatibleDonors", donors.size() + " potential donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding compatible donors", e);
-            throw new RuntimeException("Failed to retrieve compatible donors", e);
-        }
+        List<Donor> donors = query.getResultList();
+        logMethodExit("findCompatibleDonors", donors.size() + " potential donors found");
+        return donors;
     }
 
     @Override
     public List<Donor> findDonorsWithNoRecipient() {
         logMethodEntry("findDonorsWithNoRecipient");
-        try {
-            TypedQuery<Donor> query = em.createQuery(
-                    "SELECT d FROM Donor d WHERE d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
-            );
+        TypedQuery<Donor> query = em.createQuery(
+                "SELECT d FROM Donor d WHERE d.recipient IS NULL ORDER BY d.created_at DESC", Donor.class
+        );
 
-            List<Donor> donors = query.getResultList();
-            logMethodEntry("findDonorsWithNoRecipient", donors.size() + " donors found");
-            return donors;
-        } catch (Exception e) {
-            logError("Error finding donors with no recipient", e);
-            throw new RuntimeException("Failed to retrieve donors with no recipient", e);
-        }
+        List<Donor> donors = query.getResultList();
+        logMethodEntry("findDonorsWithNoRecipient", donors.size() + " donors found");
+        return donors;
     }
 
     @Override
     public Long countByStatus(Status status) {
         logMethodEntry("countByStatus", status);
-        try {
-            TypedQuery<Long> query = em.createQuery(
-                    "SELECT COUNT(d) FROM Donor d WHERE d.status = :status", Long.class);
-            query.setParameter("status", status);
-            Long count = query.getSingleResult();
-            logMethodExit("countByStatus", count);
-            return count;
-        } catch (Exception e) {
-            logError("Error counting donors by status", e);
-            throw new RuntimeException("Failed to count donors by status", e);
-        }
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(d) FROM Donor d WHERE d.status = :status", Long.class);
+        query.setParameter("status", status);
+        Long count = query.getSingleResult();
+        logMethodExit("countByStatus", count);
+        return count;
     }
 
     @Override
     public boolean existsByCin(String cin) {
         logMethodEntry("existsByCin", cin);
-        try {
-            TypedQuery<Long> query = em.createQuery(
-                    "SELECT COUNT(d) FROM Donor d WHERE d.cin = :cin", Long.class);
-            query.setParameter("cin", cin);
-            Long count = query.getSingleResult();
-            boolean exists = count > 0;
-            logMethodExit("existsByCin", exists);
-            return exists;
-        } catch (Exception e) {
-            logError("Error checking if donor exists by CIN", e);
-            return false;
-        }
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(d) FROM Donor d WHERE d.cin = :cin", Long.class);
+        query.setParameter("cin", cin);
+        Long count = query.getSingleResult();
+        boolean exists = count > 0;
+        logMethodExit("existsByCin", exists);
+        return exists;
+
     }
 
     public void close() {

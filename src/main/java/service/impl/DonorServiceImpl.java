@@ -8,7 +8,8 @@ import mapper.DonorMapper;
 import service.interfaces.DonorService;
 import utils.Loggable;
 
-import java.util.Collections;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class DonorServiceImpl extends Loggable implements DonorService {
     private final DonorDao dao;
     private final DonorMapper mapper;
+    private final EntityManager em;
 
-    public DonorServiceImpl(DonorDao dao, DonorMapper mapper) {
+    public DonorServiceImpl(DonorDao dao, DonorMapper mapper, EntityManager em) {
         this.dao = dao;
         this.mapper = mapper;
+        this.em = em;
     }
 
     @Override
@@ -56,37 +59,61 @@ public class DonorServiceImpl extends Loggable implements DonorService {
             throw new IllegalArgumentException("DonorDTO cannot be null");
         }
 
-        // TODO: condition to check if Cin Unique
+        EntityTransaction tx = em.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
 
-        Donor donor = mapper.toEntity(dto);
-        updateDonorStatus(donor);
-        Donor saved = dao.save(donor);
+            Donor donor = mapper.toEntity(dto);
+            updateDonorStatus(donor);
+            Donor saved = dao.save(donor);
 
-        DonorDTO result = toDTOWithEligibility(saved);
-        logMethodExit("CreateDonor", result);
-        return result;
+            tx.commit();
+
+            DonorDTO result = toDTOWithEligibility(saved);
+            logMethodExit("createDonor", result);
+            return result;
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Failed to create donor", e);
+            throw new RuntimeException("Failed to create donor", e);
+        }
     }
 
     @Override
     public List<DonorDTO> getAllDonors() {
         logMethodEntry("getAllDonors");
 
-        List<Donor> donors = dao.lsAll();
-        List<DonorDTO> result = donors.stream()
-                .map(this::toDTOWithEligibility).collect(Collectors.toList());
-        logMethodExit("getAllDonors", result.size() + " donors found");
-        return result;
+        try {
+            List<Donor> donors = dao.lsAll();
+            List<DonorDTO> result = donors.stream()
+                    .map(this::toDTOWithEligibility)
+                    .collect(Collectors.toList());
+            logMethodExit("getAllDonors", result.size() + " donors found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get all donors", e);
+            throw new RuntimeException("Failed to get all donors", e);
+        }
     }
 
     @Override
     public Optional<DonorDTO> getDonorById(Long id) {
         logMethodEntry("getDonorById", id);
 
-        Optional<Donor> donorOpt = dao.findById(id);
-        Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
+        try {
+            Optional<Donor> donorOpt = dao.findById(id);
+            Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
 
-        logMethodExit("getDonorById", result.isPresent() ? "Found" : "Not Found");
-        return result;
+            logMethodExit("getDonorById", result.isPresent() ? "Found" : "Not Found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get donor by id", e);
+            throw new RuntimeException("Failed to get donor by id", e);
+        }
     }
 
     @Override
@@ -97,86 +124,135 @@ public class DonorServiceImpl extends Loggable implements DonorService {
             throw new IllegalArgumentException("DonorDTO or its ID cannot be null.");
         }
 
-        Donor donor = mapper.toEntity(donorDTO);
-        updateDonorStatus(donor);
+        EntityTransaction tx = em.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+            Donor donor = mapper.toEntity(donorDTO);
+            updateDonorStatus(donor);
+            Donor updated = dao.update(donor);
 
-        Donor updated = dao.update(donor);
-        DonorDTO result = toDTOWithEligibility(updated);
+            tx.commit();
 
-        logMethodExit("updateDonor", result);
-        return result;
+            DonorDTO result = toDTOWithEligibility(updated);
+            logMethodExit("updateDonor", result);
+            return result;
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Failed to update donor", e);
+            throw new RuntimeException("Failed to update donor", e);
+        }
     }
 
     @Override
     public void deleteDonor(Long id) {
         logMethodEntry("deleteDonor", id);
 
-        dao.delete(id);
+        EntityTransaction tx = em.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+            dao.delete(id);
 
-        logMethodExit("deleteDonor");
+            tx.commit();
+
+            logMethodExit("deleteDonor");
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            logError("Failed to delete donor", e);
+            throw new RuntimeException("Failed to delete donor", e);
+        }
     }
 
     @Override
     public List<DonorDTO> getAvailableDonors() {
         logMethodEntry("getAvailableDonors");
 
-        List<Donor> donors = dao.findAvailableDonors();
-        List<DonorDTO> result = donors.stream()
-                .map(this::toDTOWithEligibility)
-                .collect(Collectors.toList());;
+        try {
+            List<Donor> donors = dao.findAvailableDonors();
+            List<DonorDTO> result = donors.stream()
+                    .map(this::toDTOWithEligibility)
+                    .collect(Collectors.toList());
 
-        logMethodExit("getAvailableDonors", result.size() + " found");
-        return result;
+            logMethodExit("getAvailableDonors", result.size() + " found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get available donors", e);
+            throw new RuntimeException("Failed to get available donors", e);
+        }
     }
 
     @Override
     public Optional<DonorDTO> getEligibleDonors() {
         logMethodEntry("getEligibleDonors");
 
-        List<Donor> donors = dao.findEligibleDonors();
+        try {
+            List<Donor> donors = dao.findEligibleDonors();
 
-        // Return just the first eligible donor as Optional (if that's the intent).
-        Optional<DonorDTO> result = donors.stream()
-                .findFirst()
-                .map(this::toDTOWithEligibility);
+            Optional<DonorDTO> result = donors.stream()
+                    .findFirst()
+                    .map(this::toDTOWithEligibility);
 
-        logMethodExit("getEligibleDonors", result.isPresent() ? "Found" : "None found");
-        return result;
+            logMethodExit("getEligibleDonors", result.isPresent() ? "Found" : "None found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get eligible donors", e);
+            throw new RuntimeException("Failed to get eligible donors", e);
+        }
     }
 
     @Override
     public List<DonorDTO> getDonorsByBloodType(BloodType bloodType) {
-
         logMethodEntry("getDonorsByBloodType", bloodType);
 
-        List<Donor> donors = dao.findByBloodType(bloodType);
-        List<DonorDTO> result = donors.stream()
-                .map(this::toDTOWithEligibility)
-                .collect(Collectors.toList());
+        try {
+            List<Donor> donors = dao.findByBloodType(bloodType);
+            List<DonorDTO> result = donors.stream()
+                    .map(this::toDTOWithEligibility)
+                    .collect(Collectors.toList());
 
-        logMethodExit("getDonorsByBloodType", result.size() + " found");
-        return result;
+            logMethodExit("getDonorsByBloodType", result.size() + " found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get donors by blood type", e);
+            throw new RuntimeException("Failed to get donors by blood type", e);
+        }
     }
 
     @Override
     public boolean isCinUnique(String cin) {
         logMethodEntry("isCinUnique", cin);
 
-        boolean unique = !dao.existsByCin(cin);
-
-        logMethodExit("isCinUnique", unique);
-        return unique;
+        try {
+            boolean unique = !dao.existsByCin(cin);
+            logMethodExit("isCinUnique", unique);
+            return unique;
+        } catch (Exception e) {
+            logError("Failed to check CIN uniqueness", e);
+            throw new RuntimeException("Failed to check CIN uniqueness", e);
+        }
     }
 
     @Override
     public Optional<DonorDTO> getDonorByCin(String cin) {
         logMethodEntry("getDonorByCin", cin);
 
-        Optional<Donor> donorOpt = dao.findByCin(cin);
-        Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
+        try {
+            Optional<Donor> donorOpt = dao.findByCin(cin);
+            Optional<DonorDTO> result = donorOpt.map(this::toDTOWithEligibility);
 
-        logMethodExit("getDonorByCin", result.isPresent() ? "Found" : "Not Found");
-        return result;
+            logMethodExit("getDonorByCin", result.isPresent() ? "Found" : "Not Found");
+            return result;
+        } catch (Exception e) {
+            logError("Failed to get donor by CIN", e);
+            throw new RuntimeException("Failed to get donor by CIN", e);
+        }
     }
 
     // Helper method to convert entity to DTO and add eligibility info

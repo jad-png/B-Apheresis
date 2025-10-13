@@ -24,7 +24,7 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
     void testCreateAndRetrieveDonor() {
         DonorDao dao = new DonorDaoImpl(em);
         DonorMapper mapper = new DonorMapper();
-        DonorService service = new DonorServiceImpl(dao, mapper);
+        DonorService service = new DonorServiceImpl(dao, mapper, em);
 
         DonorDTO dto = new DonorDTO();
         dto.setCin("HH421");
@@ -49,7 +49,7 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
     void testUpdateAndDeleteDonor() {
         DonorDao dao = new DonorDaoImpl(em);
         DonorMapper mapper = new DonorMapper();
-        DonorService service = new DonorServiceImpl(dao, mapper);
+        DonorService service = new DonorServiceImpl(dao, mapper, em);
 
         DonorDTO dto = new DonorDTO();
         dto.setCin("CC987");
