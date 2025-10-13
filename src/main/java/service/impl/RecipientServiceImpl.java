@@ -10,6 +10,7 @@ import mapper.RecipientMapper;
 import service.interfaces.RecipientService;
 import utils.Loggable;
 
+import javax.persistence.EntityManager;
 import javax.sound.sampled.ReverbType;
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 public class RecipientServiceImpl extends Loggable implements RecipientService {
     private final RecipientDao dao;
     private final RecipientMapper mapper;
+    private final EntityManager em;
 
-    public RecipientServiceImpl(RecipientDao dao, RecipientMapper mapper) {
+    public RecipientServiceImpl(RecipientDao dao, RecipientMapper mapper, EntityManager em) {
         this.dao = dao;
         this.mapper = mapper;
+        this.em = em;
     }
 
 
