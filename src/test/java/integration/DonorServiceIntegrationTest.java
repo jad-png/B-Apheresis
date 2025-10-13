@@ -44,4 +44,28 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
         assertThat(donor).isPresent();
         assertThat(donor.get().getFirstName()).isEqualTo(saved.getFirstName());
     }
+
+    @Test
+    void testUpdateAndDeleteDonor() {
+        DonorDao dao = new DonorDaoImpl(em);
+        DonorMapper mapper = new DonorMapper();
+        DonorService service = new DonorServiceImpl(dao, mapper);
+
+        DonorDTO dto = new DonorDTO();
+        dto.setCin("CC987");
+        dto.setFirstName("Ali");
+        dto.setLastName("Ben Said");
+        dto.setBloodType(BloodType.O_NEG);
+        dto.setGender(Gender.FEMALE);
+        dto.setBirthday(LocalDate.of(2004, 5, 20));
+
+        DonorDTO saved = service.createDonor(dto);
+        saved.setLastName("updated");
+
+        DonorDTO updated = service.updateDonor(saved);
+        assertThat(updated.getLastName()).isEqualTo("updated");
+
+        service.deleteDonor(updated.getId());
+        assertThat(service.getAllDonors()).hasSize(0);
+    }
 }
