@@ -28,8 +28,9 @@ public class DonorDaoImpl extends Loggable implements DonorDao {
         EntityTransaction tx = em.getTransaction();
 
         try {
-            tx.begin();
-            if (donor.getId() == null) {
+            if (!tx.isActive()) { tx.begin(); }
+
+                if (donor.getId() == null) {
                 em.persist(donor);
             } else {
                 donor = em.merge(donor);

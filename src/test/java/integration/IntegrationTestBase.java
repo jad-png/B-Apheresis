@@ -14,16 +14,22 @@ public abstract class IntegrationTestBase {
 
     @BeforeEach
     void setup () {
-        em = JPAUtils.createEM();
+        emf = JPAUtils.getEntityManagerFactory();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
     }
 
     @AfterEach
     void tearDown () {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
+        if (em != null) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.close();
         }
-        em.close();
-        emf.close();
+
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
     }
 }
