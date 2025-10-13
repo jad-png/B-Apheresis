@@ -5,6 +5,7 @@ import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.enums.BloodType;
 import entity.enums.Gender;
+import junit.framework.Assert;
 import mapper.DonorMapper;
 import org.junit.jupiter.api.Test;
 import service.impl.DonorServiceImpl;

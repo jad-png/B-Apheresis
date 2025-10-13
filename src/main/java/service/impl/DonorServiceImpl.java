@@ -152,17 +152,29 @@ public class DonorServiceImpl extends Loggable implements DonorService {
         logMethodEntry("deleteDonor", id);
 
         EntityTransaction tx = em.getTransaction();
+        boolean isNewTransaction = false;
+
         try {
             if (!tx.isActive()) {
                 tx.begin();
+
+            }
+
+            if (id == null) {
+                logMethodExit("deleteDonor", "ID is null");
             }
             dao.delete(id);
+            em.flush();
+            em.clear();
 
-            tx.commit();
+            if (isNewTransaction) {
+                tx.commit();
+                isNewTransaction = true;
+            }
 
             logMethodExit("deleteDonor");
         } catch (Exception e) {
-            if (tx.isActive()) {
+            if (tx.isActive() && isNewTransaction) {
                 tx.rollback();
             }
             logError("Failed to delete donor", e);
