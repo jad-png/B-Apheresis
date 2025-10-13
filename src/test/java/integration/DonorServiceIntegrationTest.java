@@ -53,7 +53,7 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
 
         DonorDTO dto = new DonorDTO();
         dto.setCin("CC987");
-        dto.setFirstName("Ali");
+        dto.setFirstName("younes");
         dto.setLastName("Ben Said");
         dto.setBloodType(BloodType.O_NEG);
         dto.setGender(Gender.FEMALE);
