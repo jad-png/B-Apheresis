@@ -45,6 +45,33 @@ public class RecipientIntegratedTest extends IntegrationTestBase {
         Optional<RecipientDTO> recipient = service.getRecipient(saved.getId());
         assertThat(recipient).isPresent();
         assertThat(recipient.get().getFirstName()).isEqualTo("younes");
+    }
 
+    @Test
+    void testUpdateAndDeleteRecipient() {
+        RecipientDao dao = new RecipientDaoImpl(em);
+        RecipientMapper mapper = new RecipientMapper();
+        RecipientService service = new RecipientServiceImpl(dao, mapper, em);
+
+        RecipientDTO dto = new RecipientDTO();
+        dto.setCin("CC987");
+        dto.setFirstName("younes");
+        dto.setLastName("Ben Said");
+        dto.setBloodType(BloodType.O_NEG);
+        dto.setSituation(Situation.URGENT);
+        dto.setState(State.WAITING);
+        dto.setGender(Gender.FEMALE);
+        dto.setBirthday(LocalDate.of(2004, 5, 20));
+
+        RecipientDTO saved = service.saveRecipient(dto);
+        saved.setLastName("Updated");
+
+        RecipientDTO updated = service.updateRecipient(saved);
+        assertThat(updated).isNotNull();
+
+        assertThat(updated.getLastName()).isEqualTo("Updated");
+
+        service.deleteRecipient(saved.getId());
+        assertThat(service.getAllRecipients()).hasSize(0);
     }
 }
