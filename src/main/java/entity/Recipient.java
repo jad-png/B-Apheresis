@@ -4,6 +4,7 @@ import entity.enums.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,12 +28,14 @@ public class Recipient extends Account {
     private Situation situation;
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Donor> donors;
+    private List<Donor> donors = new ArrayList<>();
 
     public Recipient() {
         super();
         this.currentBags = 0;
         this.state = State.WAITING;
+        this.requiredBags = 0;
+        this.donors = new ArrayList<>();
     }
 
     public Recipient(String firstName, String lastName, String cin,
@@ -40,8 +43,9 @@ public class Recipient extends Account {
         super(firstName, lastName, cin, birthday, gender, bloodType);
         this.situation = situation;
         this.currentBags = 0;
-        this.state = state.WAITING;
+        this.state = State.WAITING;
         this.requiredBags = 0;
+        this.donors = new ArrayList<>();
     }
 
     // busineess

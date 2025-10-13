@@ -33,58 +33,96 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
     @Override
     public RecipientDTO saveRecipient(RecipientDTO dto) {
         logMethodEntry("saveRecipient", dto);
-        Recipient r = mapper.toEntity(dto);
+        try {
+            em.getTransaction().begin();
 
-        r.calculateRequiredBags();
-        r.updateState();
+            Recipient r = mapper.toEntity(dto);
+            r.calculateRequiredBags();
+            r.updateState();
 
-        Recipient saved = dao.save(r);
-        RecipientDTO recDto = mapper.toDto(saved);
+            Recipient saved = dao.save(r);
 
-        logMethodExit("saveRecipient", dto);
-        return recDto;
+            em.getTransaction().commit();
+
+            RecipientDTO recDto = mapper.toDto(saved);
+            logMethodExit("saveRecipient", recDto);
+            return recDto;
+        } catch (Exception e) {
+            logError("saveRecipient", e);
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw new RuntimeException("Error saving recipient", e);
+        }
     }
 
     @Override
     public RecipientDTO updateRecipient(RecipientDTO dto) {
         logMethodEntry("updateRecipient", dto);
-        Recipient r = mapper.toEntity(dto);
+        try {
+            em.getTransaction().begin();
 
-        r.calculateRequiredBags();
-        r.updateState();
+            Recipient r = mapper.toEntity(dto);
+            r.calculateRequiredBags();
+            r.updateState();
 
-        Recipient saved = dao.save(r);
-        RecipientDTO recDto = mapper.toDto(saved);
+            Recipient saved = dao.save(r);
 
-        logMethodExit("updateRecipient", dto);
-        return recDto;
+            em.getTransaction().commit();
+
+            RecipientDTO recDto = mapper.toDto(saved);
+            logMethodExit("updateRecipient", recDto);
+            return recDto;
+        } catch (Exception e) {
+            logError("updateRecipient", e);
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw new RuntimeException("Error updating recipient", e);
+        }
     }
 
     @Override
     public void deleteRecipient(Long id) {
         logMethodEntry("deleteRecipient", id);
-        dao.delete(id);
-        logMethodExit("deleteRecipient", id);
+        try {
+            em.getTransaction().begin();
+
+            dao.delete(id);
+
+            em.getTransaction().commit();
+
+            logMethodExit("deleteRecipient", id);
+        } catch (Exception e) {
+            logError("deleteRecipient", e);
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw new RuntimeException("Error deleting recipient", e);
+        }
     }
 
     @Override
     public Optional<RecipientDTO> getRecipient(Long id) {
         logMethodEntry("getRecipient", id);
-        Optional<Recipient> recipient = dao.findById(id);
-        Optional<RecipientDTO> dto = recipient.map(mapper::toDto);
-        logMethodExit("getRecipient", recipient);
-        return dto;
+        try {
+            Optional<Recipient> recipient = dao.findById(id);
+            Optional<RecipientDTO> dto = recipient.map(mapper::toDto);
+            logMethodExit("getRecipient", dto);
+            return dto;
+        } catch (Exception e) {
+            logError("getRecipient", e);
+            throw new RuntimeException("Error fetching recipient", e);
+        }
     }
 
     @Override
     public List<RecipientDTO> getAllRecipients() {
         logMethodEntry("getAllRecipients");
-
-        List<RecipientDTO> list = dao.findAll().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
-        logMethodExit("getAllRecipients", list);
-        return list;
+        try {
+            List<RecipientDTO> list = dao.findAll().stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getAllRecipients", list);
+            return list;
+        } catch (Exception e) {
+            logError("getAllRecipients", e);
+            throw new RuntimeException("Error fetching all recipients", e);
+        }
     }
 
     @Override
@@ -94,57 +132,102 @@ public class RecipientServiceImpl extends Loggable implements RecipientService {
 
     @Override
     public List<RecipientDTO> getRecipientBySituation(Situation situation) {
-        logMethodEntry("getRecipientsByState", situation);
-        return dao.findBySituation(situation).stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        logMethodEntry("getRecipientsBySituation", situation);
+        try {
+            List<RecipientDTO> list = dao.findBySituation(situation).stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getRecipientsBySituation", list);
+            return list;
+        } catch (Exception e) {
+            logError("getRecipientsBySituation", e);
+            throw new RuntimeException("Error fetching recipients by situation", e);
+        }
     }
 
     @Override
     public List<RecipientDTO> getWaitingRecipients() {
         logMethodEntry("getWaitingRecipients");
-        return dao.findWaitingRecipients().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        try {
+            List<RecipientDTO> list = dao.findWaitingRecipients().stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getWaitingRecipients", list);
+            return list;
+        } catch (Exception e) {
+            logError("getWaitingRecipients", e);
+            throw new RuntimeException("Error fetching waiting recipients", e);
+        }
     }
 
     @Override
     public List<RecipientDTO> getRecipientsByBloodType(BloodType bloodType) {
         logMethodEntry("getRecipientsByBloodType", bloodType);
-        return dao.findByBloodType(bloodType).stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        try {
+            List<RecipientDTO> list = dao.findByBloodType(bloodType).stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getRecipientsByBloodType", list);
+            return list;
+        } catch (Exception e) {
+            logError("getRecipientsByBloodType", e);
+            throw new RuntimeException("Error fetching recipients by blood type", e);
+        }
     }
 
     @Override
     public List<RecipientDTO> getRecipientsByPriority() {
         logMethodEntry("getRecipientsByPriority");
-        return dao.findByPriority().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        try {
+            List<RecipientDTO> list = dao.findByPriority().stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getRecipientsByPriority", list);
+            return list;
+        } catch (Exception e) {
+            logError("getRecipientsByPriority", e);
+            throw new RuntimeException("Error fetching recipients by priority", e);
+        }
     }
 
     @Override
     public List<RecipientDTO> getUnsatisfiedRecipients() {
         logMethodEntry("getUnsatisfiedRecipients");
-        return dao.findInsatisfiedRecipients().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        try {
+            List<RecipientDTO> list = dao.findInsatisfiedRecipients().stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+            logMethodExit("getUnsatisfiedRecipients", list);
+            return list;
+        } catch (Exception e) {
+            logError("getUnsatisfiedRecipients", e);
+            throw new RuntimeException("Error fetching unsatisfied recipients", e);
+        }
     }
 
     @Override
     public boolean existsByCin(String cin) {
         logMethodEntry("existsByCin", cin);
-        boolean exists = dao.existsByCin(cin);
-        logMethodExit("existsByCin", exists);
-        return exists;
+        try {
+            boolean exists = dao.existsByCin(cin);
+            logMethodExit("existsByCin", exists);
+            return exists;
+        } catch (Exception e) {
+            logError("existsByCin", e);
+            throw new RuntimeException("Error checking existence by CIN", e);
+        }
     }
 
     @Override
     public Long countByState(State state) {
         logMethodEntry("countByState", state);
-        Long count = dao.CountByState(state);
-        logMethodExit("countByState", count);
-        return count;
+        try {
+            Long count = dao.CountByState(state);
+            logMethodExit("countByState", count);
+            return count;
+        } catch (Exception e) {
+            logError("countByState", e);
+            throw new RuntimeException("Error counting recipients by state", e);
+        }
     }
 }

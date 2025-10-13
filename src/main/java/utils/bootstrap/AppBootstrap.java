@@ -40,7 +40,7 @@ public class AppBootstrap implements ServletContextListener {
 
         RecipientDao recipientDao = new RecipientDaoImpl(em);
         RecipientMapper recipientMapper = new RecipientMapper();
-        RecipientService recipientService = new RecipientServiceImpl(recipientDao, recipientMapper);
+        RecipientService recipientService = new RecipientServiceImpl(recipientDao, recipientMapper, em);
 
         DonationDao donationDao = new DonationDaoImpl(em);
         DonationMapper donationMapper = new DonationMapper();

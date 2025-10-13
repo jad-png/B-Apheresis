@@ -5,6 +5,8 @@ import dao.interfaces.RecipientDao;
 import dto.RecipientDTO;
 import entity.enums.BloodType;
 import entity.enums.Gender;
+import entity.enums.Situation;
+import entity.enums.State;
 import mapper.RecipientMapper;
 import org.junit.jupiter.api.Test;
 import service.impl.RecipientServiceImpl;
@@ -29,6 +31,8 @@ public class RecipientIntegratedTest extends IntegrationTestBase {
         dto.setFirstName("younes");
         dto.setLastName("Ben Said");
         dto.setBloodType(BloodType.O_NEG);
+        dto.setSituation(Situation.URGENT);
+        dto.setState(State.WAITING);
         dto.setGender(Gender.FEMALE);
         dto.setBirthday(LocalDate.of(2004, 5, 20));
 
