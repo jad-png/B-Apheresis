@@ -3,15 +3,16 @@ package controller;
 import dto.DonorDTO;
 import entity.enums.BloodType;
 import service.impl.DonorServiceImpl;
+import service.interfaces.DonorService;
 import utils.Loggable;
 
 import java.util.List;
 import java.util.Optional;
 
 public class DonorController extends Loggable {
-    private final DonorServiceImpl donorSer;
+    private final DonorService donorSer;
 
-    public DonorController(DonorServiceImpl donorSer) {
+    public DonorController(DonorService donorSer) {
         this.donorSer = donorSer;
     }
 
