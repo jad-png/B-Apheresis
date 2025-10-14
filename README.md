@@ -65,9 +65,9 @@ B-Apheresis/
 │   │   │       └── bootstrap/
 │   │   │           └── AppBootstrap.java
 │   │   └── resources/
-│   │       ├── logback.xml
-│   │       └── META-INF/
-│   │           └── persistence.xml
+│   │   │    ├── logback.xml
+│   │   │    └── META-INF/
+│   │   │        └── persistence.xml
 │   │   └── webapp/
 │   │     ├── index.jsp                  # Homepage / landing page
 │   │     ├── resources/                 # Static resources (CSS, JS, images)
