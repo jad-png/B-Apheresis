@@ -69,10 +69,33 @@ B-Apheresis/
 │   │       └── META-INF/
 │   │           └── persistence.xml
 │   │   └── webapp/
-│   │       ├── index.jsp
-│   │       └── WEB-INF/
-│   │           ├── persistence.xml
-│   │           └── web.xml
+│   │     ├── index.jsp                  # Homepage / landing page
+│   │     ├── resources/                 # Static resources (CSS, JS, images)
+│   │     │    ├── css/
+│   │     │    │    └── styles.css
+│   │     │    ├── js/
+│   │     │    │    └── scripts.js
+│   │     │    └── images/
+│   │     └── WEB-INF/
+│   │          ├── views/
+│   │          │    ├── donors/          # JSPs related to Donor functionality
+│   │          │    │    ├── list.jsp
+│   │          │    │    ├── create.jsp
+│   │          │    │    └── edit.jsp
+│   │          │    ├── recipients/      # JSPs related to Recipient functionality
+│   │          │    │    ├── list.jsp
+│   │          │    │    ├── create.jsp
+│   │          │    │    └── edit.jsp
+│   │          │    ├── common/          # Shared JSP fragments (headers, footers, navbars)
+│   │          │    │    ├── header.jsp
+│   │          │    │    ├── footer.jsp
+│   │          │    │    └── navbar.jsp
+│   │          │    ├── error.jsp        # Generic error page
+│   │          │    └── dashboard.jsp    # Optional dashboard page for analytics
+│   │          ├── lib/                  # JSP tag libraries if any
+│   │          └── web.xml                # Servlet and filter configuration, no annotations
+│   │            
+│   │           
 │   └── test/
 │       ├── java/
 │       │   └── integration/
