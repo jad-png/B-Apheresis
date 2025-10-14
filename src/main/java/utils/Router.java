@@ -12,4 +12,8 @@ public class Router {
         RequestDispatcher dispatcher = req.getRequestDispatcher(fullPath);
         dispatcher.forward(req, res);
     }
+
+    public static void redirect(HttpServletResponse res, HttpServletRequest req, String path) throws ServletException, IOException {
+        res.sendRedirect(path);
+    }
 }
