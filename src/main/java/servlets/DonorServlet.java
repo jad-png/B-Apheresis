@@ -43,13 +43,32 @@ public class DonorServlet extends HttpServlet {
                 handleDelete(req, res);
                 break;
             case "list":
-                listDonors(req, res);
+                listAllDonors(req, res);
                 break;
             case "filter":
                 handleFilter(req, res);
                 break;
             default:
                 listDonors(req, res);
+                break;
+        }
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
+
+        switch (action) {
+            case "create":
+                handleCreate(req, res);
+                break;
+            case "update":
+                handleUpdate(req, res);
+                break;
+            case "delete":
+                handleDelete(req, res);
+                break;
+            default:
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
                 break;
         }
     }
@@ -66,16 +85,35 @@ public class DonorServlet extends HttpServlet {
         Router.goTo(res, req, "/donor/edit");
     }
 
-    private void listDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        List<DonorDTO> donors = controller.getAllDonors();
-        req.setAttribute("donors", donors);
+    
+
+    // ------- list methods --------
+    private void listAllDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+            List<DonorDTO> donors = controller.getAllDonors();
+            req.setAttribute("donors", donors);
         Router.goTo(res, req, "/donor/list");
     }
 
-    private void handleFilter(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    private void listDonorsByBloodType(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String bloodType = req.getParameter("bloodType");
-        List<DonorDTO> filtered = controller.getDonorsByBloodType(bloodType);
-        req.setAttribute("donors", filtered);
+            List<DonorDTO> filtered = controller.getDonorsByBloodType(bloodType);
+            req.setAttribute("donors", filtered);
+        Router.goTo(res, req, "/donor/list");
+    }
+
+    private void listAvailableDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+            List<DonorDTO> availableDonors = controller.getAvailableDonors();
+            req.setAttribute("donors", availableDonors);
+        Router.goTo(res, req, "/donor/list");
+    }
+
+    private void listEligibleDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+            Optional<DonorDTO> eligibleDonorOpt = controller.getEligibleDonors();
+            if (eligibleDonorOpt.isPresent()) {
+                req.setAttribute("donors", List.of(eligibleDonorOpt.get()));
+            } else {
+                req.setAttribute("donors", List.of());
+            }
         Router.goTo(res, req, "/donor/list");
     }
 
