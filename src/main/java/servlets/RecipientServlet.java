@@ -49,8 +49,29 @@ public class RecipientServlet extends HttpServlet {
         String filterType = req.getParameter("filterType");
 
         if (filterType == null || filterType.isEmpty()) {
-            // if null list all recipient
+            listAllRecipients(req, res);
             return;
+        }
+
+        switch (filterType) {
+            case "bloodType":
+                listRecipientsByBloodType(req, res);
+                break;
+            case "state":
+                listRecipientsByState(req, res);
+                break;
+            case "situation":
+                listRecipientsBySituation(req, res);
+                break;
+            case "waiting":
+                listWaitingRecipients(req, res);
+                break;
+            case "priority":
+                listPriorityRecipients(req, res);
+                break;
+            default:
+                listAllRecipients(req, res);
+                break;
         }
 
         // switch case
@@ -63,21 +84,21 @@ public class RecipientServlet extends HttpServlet {
         Router.goTo(res, req, "/recipient/list");
     }
 
-    private void listRecipientByBloodType(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    private void listRecipientsByBloodType(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String bloodType = req.getParameter("bloodType");
         List<RecipientDTO> r = controller.getRecipientsByBloodType(bloodType);
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
     }
 
-    private void listRecipientByState(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    private void listRecipientsByState(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String state = req.getParameter("state");
         List<RecipientDTO> r = controller.getRecipientsByState(state);
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
     }
 
-    private void listRecipientBySituation(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    private void listRecipientsBySituation(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String situation = req.getParameter("situation");
         List<RecipientDTO> r = controller.getRecipientsBySituation(situation);
         req.setAttribute("recipients", r);
@@ -86,6 +107,12 @@ public class RecipientServlet extends HttpServlet {
 
     private void listPriorityRecipients(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         List<RecipientDTO> r = controller.getRecipientsByPriority();
+        req.setAttribute("recipients", r);
+        Router.goTo(res, req, "/recipient/list");
+    }
+
+    private void listWaitingRecipients(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        List<RecipientDTO> r = controller.getWaitingRecipients();
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
     }
