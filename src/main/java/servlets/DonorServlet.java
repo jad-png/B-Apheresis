@@ -3,9 +3,11 @@ package servlets;
 import config.DIContainer;
 import controller.DonorController;
 import dto.DonorDTO;
+import entity.Donor;
 import entity.enums.BloodType;
 import entity.enums.Gender;
 import entity.enums.MedicalCondition;
+import mapper.DonorMapper;
 import utils.Router;
 
 import javax.servlet.ServletException;
@@ -19,10 +21,12 @@ import java.util.Optional;
 
 public class DonorServlet extends HttpServlet {
     private DonorController controller;
+    private DonorMapper mapper;
 
     @Override
     public void init() throws ServletException {
         this.controller = DIContainer.getInstance().getBean(DonorController.class);
+        this.mapper = DIContainer.getInstance().getBean(DonorMapper.class);
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -56,9 +60,34 @@ public class DonorServlet extends HttpServlet {
 
     // --------- Handlets ---------
     private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        DonorDTO dto = extractDonorFromRequest(req);
 
+        Donor d = mapper.toEntity(dto);
+
+        dto.setEligible(controller.isEligible(d));
+        dto.setCanDonate(controller.canDonate(d));
+
+        controller.createDonor(dto);
+        Router.goTo(res, req, "/donors?action=list");
     }
 
+    private void handleUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        DonorDTO dto = extractDonorFromRequest(req);
+
+        Donor d = mapper.toEntity(dto);
+
+        dto.setEligible(controller.isEligible(d));
+        dto.setCanDonate(controller.canDonate(d));
+
+        controller.updateDonor(dto);
+        Router.redirect(res, req, "donors?action=list");
+    }
+
+    private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        Long id = Long.parseLong(req.getParameter("id"));
+        controller.deleteDonor(id);
+        Router.redirect(res, req, "/donors?action=list");
+    }
 
     // --------- Helpers ---------
     private DonorDTO extractDonorFromRequest(HttpServletRequest req) throws ServletException, IOException {
