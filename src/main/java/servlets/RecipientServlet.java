@@ -27,6 +27,27 @@ public class RecipientServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = req.getParameter("action");
+
+        switch (action) {
+            case "create":
+                showCreateForm(req, res);
+                break;
+            case "edit":
+                showEditForm(req, res);
+                break;
+            case "delete":
+                // TODO: implement handle delete
+                break;
+            case "filter":
+                handleFilter(req, res);
+                break;
+            case "list":
+                listAllRecipients(req, res);
+                break;
+            default:
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
+        }
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
