@@ -87,5 +87,16 @@ public class DonationServlet extends HttpServlet {
         donationCon.deleteDonation(id);
         Router.redirect(res, req, "/donations?action=list");
     }
+
+    // --------- Form Handlers ---------
+    private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String donorIdParam = req.getParameter("donorId");
+        String recipientIdParam = req.getParameter("recipientId");
+
+        if (donorIdParam == null || recipientIdParam == null
+            || recipientIdParam.isEmpty() || donorIdParam.isEmpty()) {
+            
+        }
+    }
 }
 
