@@ -37,14 +37,42 @@ public class DonationServlet extends HttpServlet {
         this.mapper = DIContainer.getInstance().getBean(DonationMapper.class);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
     }
 
-    // -------
+    // ------- View Handlers ---------
+    private void listDonations(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        List<DonationDTO> d = donationCon.getAllDonations();
+        req.setAttribute("donations", d);
+        Router.goTo(res, req, "/donations/list");
+    }
+
+    private void showMatchPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String donorIdParam = req.getParameter("donorId");
+
+        if (donorIdParam == null || donorIdParam.isEmpty()) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "donorId is required");
+            return;
+        }
+            Long donorId = Long.parseLong(donorIdParam);
+            Optional<DonorDTO> donorOpt = donorCon.getDonor(donorId);
+
+            if (!donorOpt.isPresent()) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Donor not found with ID: " + donorId);
+                return;
+            }
+
+            DonorDTO donor = donorOpt.get();
+            List<RecipientDTO> compatibleRecipients = matchingService.findCompatibleRecipients(donor.getBloodType());
+
+            req.setAttribute("donor", donor);
+            req.setAttribute("compatibleRecipients", compatibleRecipients);
+            Router.goTo(res, req, "/donations/match");
+    }
 }
 

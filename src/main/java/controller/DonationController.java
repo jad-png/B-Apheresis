@@ -63,7 +63,7 @@ public class DonationController extends Loggable {
         }
     }
 
-    public List<DonationDTO> getDonnationByDonorId(Long id) {
+    public List<DonationDTO> getDonationByDonorId(Long id) {
         logMethodEntry("getDonationByDonorId", id);
         try {
             List<DonationDTO> result = service.getByDonatorId(id);
