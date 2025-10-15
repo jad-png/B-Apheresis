@@ -9,5 +9,9 @@ public class BaseServlet  extends HttpServlet {
         String action = req.getParameter("action");
         return (action == null || action.isEmpty()) ? "list" : action;
     }
-    
+
+    protected boolean isAjaxRequest(HttpServletRequest req) {
+        String header = req.getHeader("X-Requested-With");
+        return header != null && "XMLHttpRequest".equals(header);
+    }
 }
