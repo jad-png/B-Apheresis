@@ -1,6 +1,7 @@
 package controller;
 
 import dto.DonorDTO;
+import entity.Donor;
 import entity.enums.BloodType;
 import service.impl.DonorServiceImpl;
 import service.interfaces.DonorService;
@@ -14,6 +15,18 @@ public class DonorController extends Loggable {
 
     public DonorController(DonorService donorSer) {
         this.donorSer = donorSer;
+    }
+
+    public boolean isEligible(Donor d) {
+        return donorSer.isEligible(d);
+    }
+
+    public boolean canDonate(Donor d) {
+        return donorSer.canDonate(d);
+    }
+
+    public void updateStatus(Donor d) {
+        donorSer.updateDonorStatus(d);
     }
 
     public DonorDTO createDonor(DonorDTO dto) {

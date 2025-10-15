@@ -42,4 +42,9 @@ public class DonorServlet extends HttpServlet {
         req.setAttribute("donors", donors);
         Router.goTo(res, req, "/donor/list");
     }
+
+    // --------- Handlets ---------
+    private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        DonorDTO dto = new
+    }
 }
