@@ -143,6 +143,24 @@ public class RecipientServlet extends HttpServlet {
         Router.goTo(res, req, "/recipient/list");
     }
 
+    // --------- Form Handlers ---------
+    private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        RecipientDTO dto = extractRecipientFromRequest(req);
+        controller.createRecipient(dto);
+        Router.redirect(res, req, "/recipient?action=list");
+    }
+
+    private void handleUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        RecipientDTO dto = extractRecipientFromRequest(req);
+        controller.updateRecipient(dto);
+        Router.redirect(res, req, "/recipient?action=list");
+    }
+
+    private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        Long id = Long.parseLong(req.getParameter("id"));
+        controller.deleteRecipient(id);
+        Router.redirect(res, req, "/recipient?action=list");
+    }
 
     // --------- helpers ---------
     private RecipientDTO extractRecipientFromRequest(HttpServletRequest req) {
