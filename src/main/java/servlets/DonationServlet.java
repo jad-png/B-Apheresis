@@ -1,0 +1,50 @@
+package servlets;
+
+import config.DIContainer;
+import controller.DonationController;
+import controller.DonorController;
+import controller.RecipientController;
+import dto.DonationDTO;
+import dto.DonorDTO;
+import dto.RecipientDTO;
+import entity.Donor;
+import entity.Recipient;
+import mapper.DonationMapper;
+import service.impl.MatchingService;
+import service.interfaces.DonationService;
+import utils.Router;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+public class DonationServlet extends HttpServlet {
+    private DonationController donationCon;
+    private DonorController donorCon;
+    private RecipientController recipientCon;
+    private MatchingService matchingService;
+    private DonationMapper mapper;
+
+    public void init() throws ServletException {
+        this.donationCon = DIContainer.getInstance().getBean(DonationController.class);
+        this.donorCon = DIContainer.getInstance().getBean(DonorController.class);
+        this.recipientCon = DIContainer.getInstance().getBean(RecipientController.class);
+        this.matchingService = DIContainer.getInstance().getBean(MatchingService.class);
+        this.mapper = DIContainer.getInstance().getBean(DonationMapper.class);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    // -------
+}
+
