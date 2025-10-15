@@ -85,7 +85,29 @@ public class DonorServlet extends HttpServlet {
         Router.goTo(res, req, "/donor/edit");
     }
 
-    
+    private void handleFilter(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String filterType = req.getParameter("filterType");
+
+        if (filterType == null || filterType.isEmpty()) {
+            listAllDonors(req, res);
+            return;
+        }
+
+        switch (filterType) {
+            case "bloodType":
+                listDonorsByBloodType(req, res);
+                break;
+            case "available":
+                listAvailableDonors(req, res);
+                break;
+            case "eligible":
+                listEligibleDonors(req, res);
+                break;
+            default:
+                listAllDonors(req, res);
+                break;
+        }
+    }
 
     // ------- list methods --------
     private void listAllDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
