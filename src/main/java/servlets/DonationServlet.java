@@ -74,5 +74,18 @@ public class DonationServlet extends HttpServlet {
             req.setAttribute("compatibleRecipients", compatibleRecipients);
             Router.goTo(res, req, "/donations/match");
     }
+
+    private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String idParam = req.getParameter("id");
+
+        if (idParam == null || idParam.isEmpty()) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "donorId is required");
+            Router.redirect(res, req, "/donations?action=list");
+        }
+
+        Long id = Long.parseLong(idParam);
+        donationCon.deleteDonation(id);
+        Router.redirect(res, req, "/donations?action=list");
+    }
 }
 

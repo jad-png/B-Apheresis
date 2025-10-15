@@ -3,7 +3,6 @@ package service.impl;
 import dao.interfaces.DonorDao;
 import dao.interfaces.RecipientDao;
 import dto.DonorDTO;
-import dto.RecipientDTO;
 import entity.Recipient;
 import entity.enums.BloodType;
 
@@ -19,7 +18,7 @@ public class MatchingService {
         this.recipientDao = recipientDao;
     }
 
-    public List<RecipientDTO> findCompatibleRecipients(BloodType donorBloodType) {
+    public List<Recipient> findCompatibleRecipients(BloodType donorBloodType) {
         List<Recipient> waitingRecipients = recipientDao.findWaitingRecipients();
         List<Recipient> compatibleRecipients = new ArrayList<>();
 
