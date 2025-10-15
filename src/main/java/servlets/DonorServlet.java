@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +43,14 @@ public class DonorServlet extends HttpServlet {
             case "delete":
                 handleDelete(req, res);
                 break;
-            case "list":
-                listAllDonors(req, res);
-                break;
             case "filter":
                 handleFilter(req, res);
                 break;
+            case "list":
+                listAllDonors(req, res);
+                break;
             default:
-                listDonors(req, res);
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
                 break;
         }
     }
@@ -132,9 +133,9 @@ public class DonorServlet extends HttpServlet {
     private void listEligibleDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
             Optional<DonorDTO> eligibleDonorOpt = controller.getEligibleDonors();
             if (eligibleDonorOpt.isPresent()) {
-                req.setAttribute("donors", List.of(eligibleDonorOpt.get()));
+                req.setAttribute("donors", Collections.singletonList(eligibleDonorOpt.get()));
             } else {
-                req.setAttribute("donors", List.of());
+                req.setAttribute("donors", Collections.emptyList());
             }
         Router.goTo(res, req, "/donor/list");
     }
