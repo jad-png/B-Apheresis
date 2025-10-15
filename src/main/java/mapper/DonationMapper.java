@@ -32,7 +32,7 @@ public class DonationMapper {
         Recipient recipient = new Recipient();
         recipient.setId(dto.getRecipientId());
         donation.setRecipient(recipient);
-        
+
         return donation;
     }
 }
