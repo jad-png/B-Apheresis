@@ -30,7 +30,28 @@ public class DonorServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
 
+        switch (action) {
+            case "create":
+                showCreateForm(req, res);
+                break;
+            case "edit":
+                showEditForm(req, res);
+                break;
+            case "delete":
+                handleDelete(req, res);
+                break;
+            case "list":
+                listDonors(req, res);
+                break;
+            case "filter":
+                handleFilter(req, res);
+                break;
+            default:
+                listDonors(req, res);
+                break;
+        }
     }
 
     // --------- Views ---------
@@ -54,7 +75,7 @@ public class DonorServlet extends HttpServlet {
     private void handleFilter(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String bloodType = req.getParameter("bloodType");
         List<DonorDTO> filtered = controller.getDonorsByBloodType(bloodType);
-        req.setAttribute("filtered", filtered);
+        req.setAttribute("donors", filtered);
         Router.goTo(res, req, "/donor/list");
     }
 
