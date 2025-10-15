@@ -32,7 +32,7 @@ public class RecipientServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String action = req.getParameter("action");
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
 
         switch (action) {
             case "create":
@@ -42,7 +42,7 @@ public class RecipientServlet extends HttpServlet {
                 showEditForm(req, res);
                 break;
             case "delete":
-                // TODO: implement handle delete
+                handleDelete(req, res);
                 break;
             case "filter":
                 handleFilter(req, res);
@@ -56,6 +56,21 @@ public class RecipientServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
+
+        switch (action) {
+            case "create":
+                handleCreate(req, res);
+                break;
+            case "update":
+                handleUpdate(req, res);
+                break;
+            case "delete":
+                handleDelete(req, res);
+                break;
+            default:
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+        }
     }
 
     //    --------- Views -------
