@@ -38,7 +38,7 @@ public class DonationServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String action = req.getParameter("action");
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
 
         switch (action) {
             case "list":
@@ -56,7 +56,15 @@ public class DonationServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = Optional.ofNullable(req.getParameter("action")).orElse("");
 
+        switch (action) {
+            case "create":
+                handleCreate(req, res);
+                break;
+            default:
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+        }
     }
 
     // ------- View Handlers ---------
