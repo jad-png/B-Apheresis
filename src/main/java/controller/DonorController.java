@@ -1,18 +1,32 @@
 package controller;
 
 import dto.DonorDTO;
+import entity.Donor;
 import entity.enums.BloodType;
 import service.impl.DonorServiceImpl;
+import service.interfaces.DonorService;
 import utils.Loggable;
 
 import java.util.List;
 import java.util.Optional;
 
 public class DonorController extends Loggable {
-    private final DonorServiceImpl donorSer;
+    private final DonorService donorSer;
 
-    public DonorController(DonorServiceImpl donorSer) {
+    public DonorController(DonorService donorSer) {
         this.donorSer = donorSer;
+    }
+
+    public boolean isEligible(Donor d) {
+        return donorSer.isEligible(d);
+    }
+
+    public boolean canDonate(Donor d) {
+        return donorSer.canDonate(d);
+    }
+
+    public void updateStatus(Donor d) {
+        donorSer.updateDonorStatus(d);
     }
 
     public DonorDTO createDonor(DonorDTO dto) {
@@ -33,7 +47,7 @@ public class DonorController extends Loggable {
             Optional<DonorDTO> result = donorSer.getDonorById(id);
             logMethodExit("getDonor", result);
             return result;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             logError("Error in getDonor controller", e);
             return Optional.empty();
         }
@@ -45,7 +59,7 @@ public class DonorController extends Loggable {
             List<DonorDTO> result = donorSer.getAllDonors();
             logMethodExit("getAllDonors", result);
             return result;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             logError("Error in getAllDonor controller", e);
             throw new RuntimeException("Failed to retrieve donors", e);
         }
@@ -62,6 +76,19 @@ public class DonorController extends Loggable {
             logError("Error in getAvailableDonors controller", e);
             throw new RuntimeException("Failed to retrieve available donors", e);
         }
+    }
+
+    public Optional<DonorDTO> getEligibleDonors() {
+        logMethodEntry("getEligibleDonors");
+        try {
+            Optional<DonorDTO> donors = donorSer.getEligibleDonors();
+            logMethodExit("getEligibleDonors");
+            return donors;
+        } catch (Exception e) {
+            logError("Error in getEligibleDonors controller", e);
+            throw new RuntimeException("Failed to retrieve eligible donors", e);
+        }
+
     }
 
     public List<DonorDTO> getDonorsByBloodType(String bloodType) {

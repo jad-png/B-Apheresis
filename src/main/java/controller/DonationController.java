@@ -3,6 +3,7 @@ package controller;
 import dto.DonationDTO;
 import dto.DonorDTO;
 import service.impl.DonationServiceImpl;
+import service.interfaces.DonationService;
 import utils.Loggable;
 
 import java.util.Collection;
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class DonationController extends Loggable {
-    private final DonationServiceImpl service;
+    private final DonationService service;
 
-    public DonationController(DonationServiceImpl service) {
+    public DonationController(DonationService service) {
         this.service = service;
     }
 
@@ -62,7 +63,7 @@ public class DonationController extends Loggable {
         }
     }
 
-    public List<DonationDTO> getDonnationByDonorId(Long id) {
+    public List<DonationDTO> getDonationByDonorId(Long id) {
         logMethodEntry("getDonationByDonorId", id);
         try {
             List<DonationDTO> result = service.getByDonatorId(id);

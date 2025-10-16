@@ -1,7 +1,10 @@
 package mapper;
 
 import dto.DonationDTO;
+import entity.Account;
 import entity.Donation;
+import entity.Donor;
+import entity.Recipient;
 
 public class DonationMapper {
     public DonationDTO toDto (Donation donation) {
@@ -21,8 +24,14 @@ public class DonationMapper {
         Donation donation = new Donation();
 
         donation.setId(dto.getId());
-        donation.getDonor().setId(dto.getDonorId());
-        donation.getRecipient().setId(dto.getRecipientId());
+
+        Donor donor = new Donor();
+        donor.setId(dto.getDonorId());
+        donation.setDonor(donor);
+
+        Recipient recipient = new Recipient();
+        recipient.setId(dto.getRecipientId());
+        donation.setRecipient(recipient);
 
         return donation;
     }

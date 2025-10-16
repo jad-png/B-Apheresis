@@ -5,6 +5,7 @@ import entity.enums.BloodType;
 import entity.enums.Situation;
 import entity.enums.State;
 import service.impl.RecipientServiceImpl;
+import service.interfaces.RecipientService;
 import utils.Loggable;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Optional;
 public class RecipientController extends Loggable {
     private final RecipientServiceImpl service;
 
-    public RecipientController(RecipientServiceImpl service) {
+    public RecipientController(RecipientService service) {
         this.service = service;
     }
 
