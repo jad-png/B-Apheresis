@@ -37,11 +37,25 @@ public class DonationServlet extends HttpServlet {
         this.mapper = DIContainer.getInstance().getBean(DonationMapper.class);
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = req.getParameter("action");
 
+        switch (action) {
+            case "list":
+                listDonations(req, res);
+                break;
+            case "match":
+                showMatchPage(req, res);
+                break;
+            case "delete":
+                handleDelete(req, res);
+                break;
+            default:
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
+        }
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
     }
 
@@ -68,7 +82,7 @@ public class DonationServlet extends HttpServlet {
             }
 
             DonorDTO donor = donorOpt.get();
-            List<RecipientDTO> compatibleRecipients = matchingService.findCompatibleRecipients(donor.getBloodType());
+            List<Recipient> compatibleRecipients = matchingService.findCompatibleRecipients(donor.getBloodType());
 
             req.setAttribute("donor", donor);
             req.setAttribute("compatibleRecipients", compatibleRecipients);
@@ -89,14 +103,26 @@ public class DonationServlet extends HttpServlet {
     }
 
     // --------- Form Handlers ---------
+
     private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String donorIdParam = req.getParameter("donorId");
         String recipientIdParam = req.getParameter("recipientId");
 
         if (donorIdParam == null || recipientIdParam == null
             || recipientIdParam.isEmpty() || donorIdParam.isEmpty()) {
-            
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing donorId or recipientId");
+            return;
         }
+
+        Long donorId = Long.parseLong(donorIdParam);
+        Long recipientId = Long.parseLong(recipientIdParam);
+
+        DonationDTO dto = new DonationDTO();
+        dto.setDonorId(donorId);
+        dto.setRecipientId(recipientId);
+
+        donationCon.createDonation(dto);
+        Router.redirect(res, req, "/donations?action=list");
     }
 }
 
