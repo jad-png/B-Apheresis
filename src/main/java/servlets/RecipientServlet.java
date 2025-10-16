@@ -84,6 +84,7 @@ public class RecipientServlet extends HttpServlet {
         Optional<RecipientDTO> recipientOpt = controller.getRecipientById(id);
         recipientOpt.ifPresent(r -> req.setAttribute("recipient", r));
         Router.goTo(res, req, "/recipient/edit");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleFilter(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -112,6 +113,7 @@ public class RecipientServlet extends HttpServlet {
                 break;
             default:
                 listAllRecipients(req, res);
+                req.setAttribute("errorMessage", "Something went wrong!");
                 break;
         }
 
@@ -123,6 +125,7 @@ public class RecipientServlet extends HttpServlet {
         List<RecipientDTO> r = controller.getAllRecipients();
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void listRecipientsByBloodType(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -130,6 +133,7 @@ public class RecipientServlet extends HttpServlet {
         List<RecipientDTO> r = controller.getRecipientsByBloodType(bloodType);
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void listRecipientsByState(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -137,6 +141,7 @@ public class RecipientServlet extends HttpServlet {
         List<RecipientDTO> r = controller.getRecipientsByState(state);
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void listRecipientsBySituation(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -144,18 +149,22 @@ public class RecipientServlet extends HttpServlet {
         List<RecipientDTO> r = controller.getRecipientsBySituation(situation);
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void listPriorityRecipients(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         List<RecipientDTO> r = controller.getRecipientsByPriority();
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
+
     }
 
     private void listWaitingRecipients(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         List<RecipientDTO> r = controller.getWaitingRecipients();
         req.setAttribute("recipients", r);
         Router.goTo(res, req, "/recipient/list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     // --------- Form Handlers ---------
@@ -163,18 +172,21 @@ public class RecipientServlet extends HttpServlet {
         RecipientDTO dto = extractRecipientFromRequest(req);
         controller.createRecipient(dto);
         Router.redirect(res, req, "/recipient?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         RecipientDTO dto = extractRecipientFromRequest(req);
         controller.updateRecipient(dto);
         Router.redirect(res, req, "/recipient?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         controller.deleteRecipient(id);
         Router.redirect(res, req, "/recipient?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     // --------- helpers ---------
