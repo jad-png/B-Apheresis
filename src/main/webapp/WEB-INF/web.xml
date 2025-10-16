@@ -19,10 +19,30 @@
         <servlet-class>servlets.DonorServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>recipientServlet</servlet-name>
+        <servlet-class>servlets.RecipientServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>donationServlet</servlet-name>
+        <servlet-class>servlets.DonationServlet</servlet-class>
+    </servlet>
+
     <!-- map servlet to a url -->
     <servlet-mapping>
         <servlet-name>donorServlet</servlet-name>
         <url-pattern>/donors</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>recipientServlet</servlet-name>
+        <url-pattern>/recipients</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>donationServlet</servlet-name>
+        <url-pattern>/donations</url-pattern>
     </servlet-mapping>
 
 </web-app>
