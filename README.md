@@ -89,9 +89,8 @@ B-Apheresis/
 │   │          │    ├── common/          # Shared JSP fragments (headers, footers, navbars)
 │   │          │    │    ├── header.jsp
 │   │          │    │    ├── footer.jsp
-│   │          │    │    └── navbar.jsp
-│   │          │    ├── error.jsp        # Generic error page
-│   │          │    └── dashboard.jsp    # Optional dashboard page for analytics
+│   │          │    │    └── messages.jsp
+│   │          │    └── error.jsp        # Generic error page
 │   │          ├── lib/                  # JSP tag libraries if any
 │   │          └── web.xml                # Servlet and filter configuration, no annotations
 │   │            
