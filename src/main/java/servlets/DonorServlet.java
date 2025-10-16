@@ -50,7 +50,7 @@ public class DonorServlet extends HttpServlet {
                 listAllDonors(req, res);
                 break;
             default:
-                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
+                req.setAttribute("errorMessage", "Something went wrong!");
                 break;
         }
     }
@@ -69,7 +69,7 @@ public class DonorServlet extends HttpServlet {
                 handleDelete(req, res);
                 break;
             default:
-                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+                req.setAttribute("errorMessage", "Something went wrong!");
                 break;
         }
     }
@@ -114,6 +114,7 @@ public class DonorServlet extends HttpServlet {
     private void listAllDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
             List<DonorDTO> donors = controller.getAllDonors();
             req.setAttribute("donors", donors);
+        req.setAttribute("successMessage", "Operation completed successfully!");
         Router.goTo(res, req, "/donor/list");
     }
 
@@ -121,12 +122,15 @@ public class DonorServlet extends HttpServlet {
         String bloodType = req.getParameter("bloodType");
             List<DonorDTO> filtered = controller.getDonorsByBloodType(bloodType);
             req.setAttribute("donors", filtered);
+        req.setAttribute("successMessage", "Operation completed successfully!");
         Router.goTo(res, req, "/donor/list");
     }
 
     private void listAvailableDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
             List<DonorDTO> availableDonors = controller.getAvailableDonors();
             req.setAttribute("donors", availableDonors);
+        req.setAttribute("successMessage", "Operation completed successfully!");
+
         Router.goTo(res, req, "/donor/list");
     }
 
@@ -134,8 +138,11 @@ public class DonorServlet extends HttpServlet {
             Optional<DonorDTO> eligibleDonorOpt = controller.getEligibleDonors();
             if (eligibleDonorOpt.isPresent()) {
                 req.setAttribute("donors", Collections.singletonList(eligibleDonorOpt.get()));
+                req.setAttribute("successMessage", "Operation completed successfully!");
             } else {
                 req.setAttribute("donors", Collections.emptyList());
+                req.setAttribute("successMessage", "Operation completed successfully!");
+
             }
         Router.goTo(res, req, "/donor/list");
     }
@@ -151,6 +158,7 @@ public class DonorServlet extends HttpServlet {
 
         controller.createDonor(dto);
         Router.goTo(res, req, "/donors?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -163,12 +171,14 @@ public class DonorServlet extends HttpServlet {
 
         controller.updateDonor(dto);
         Router.redirect(res, req, "donors?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         controller.deleteDonor(id);
         Router.redirect(res, req, "/donors?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     // --------- Helpers ---------
