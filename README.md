@@ -1,145 +1,197 @@
 # B-Apheresis
 
+A web-based blood donation management system that facilitates matching blood donors with recipients while managing the donation process.
+
+## Table of Contents
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Setup & Installation](#setup--installation)
+- [Running the Application](#running-the-application)
+- [API Documentation](#api-documentation)
+
+## Features
+
+- Donor management and registration
+- Recipient tracking and management
+- Blood donation process handling
+- Automated donor-recipient matching
+- Real-time status tracking
+- Comprehensive logging system
+
+## Technology Stack
+
+- Java 11
+- JPA/Hibernate
+- PostgreSQL
+- Servlet API
+- JSP/JSTL
+- Maven
+- Logback
+- JUnit
+
 ## Project Structure
 
 ```
 B-Apheresis/
-├── pom.xml
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   ├── Main.java
-│   │   │   ├── config/
+│   │   │   ├── config/                 # Application configuration
 │   │   │   │   ├── DIContainer.java
 │   │   │   │   └── LoggerConfig.java
-│   │   │   ├── controller/
-│   │   │   │   ├── DonationController.java
-│   │   │   │   ├── DonorController.java
-│   │   │   │   └── RecipientController.java
-│   │   │   ├── dao/
-│   │   │   │   ├── interfaces/
-│   │   │   │   │   ├── DonationDao.java
-│   │   │   │   │   ├── DonorDao.java
-│   │   │   │   │   └── RecipientDao.java
-│   │   │   │   └── impl/
-│   │   │   │       ├── DonationDaoImpl.java
-│   │   │   │       ├── DonorDaoImpl.java
-│   │   │   │       └── RecipientDaoImpl.java
-│   │   │   ├── dto/
-│   │   │   │   ├── DonationDTO.java
-│   │   │   │   ├── DonorDTO.java
-│   │   │   │   └── RecipientDTO.java
-│   │   │   ├── entity/
-│   │   │   │   ├── Account.java
-│   │   │   │   ├── Donation.java
-│   │   │   │   ├── Donor.java
-│   │   │   │   ├── Recipient.java
+│   │   │   ├── controller/             # MVC Controllers
+│   │   │   ├── dao/                    # Data Access Layer
+│   │   │   │   ├── impl/
+│   │   │   │   └── interfaces/
+│   │   │   ├── dto/                    # Data Transfer Objects
+│   │   │   ├── entity/                 # JPA Entities
 │   │   │   │   └── enums/
-│   │   │   │       ├── BloodType.java
-│   │   │   │       ├── Gender.java
-│   │   │   │       ├── MedicalCondition.java
-│   │   │   │       ├── Situation.java
-│   │   │   │       ├── State.java
-│   │   │   │       └── Status.java
-│   │   │   ├── mapper/
-│   │   │   │   ├── DonationMapper.java
-│   │   │   │   ├── DonorMapper.java
-│   │   │   │   └── RecipientMapper.java
-│   │   │   ├── service/
-│   │   │   │   ├── interfaces/
-│   │   │   │   │   ├── DonationService.java
-│   │   │   │   │   ├── DonorService.java
-│   │   │   │   │   └── RecipientService.java
-│   │   │   │   └── impl/
-│   │   │   │       ├── DonationServiceImpl.java
-│   │   │   │       ├── DonorServiceImpl.java
-│   │   │   │       ├── MatchingService.java
-│   │   │   │       └── RecipientServiceImpl.java
-│   │   │   ├── servlets/
-│   │   │   │   └── HelloServlet.java
-│   │   │   └── utils/
-│   │   │       ├── JPAUtils.java
-│   │   │       ├── Loggable.java
-│   │   │       ├── LoggerUtil.java
-│   │   │       ├── Router.java
-│   │   │       └── bootstrap/
-│   │   │           └── AppBootstrap.java
-│   │   └── resources/
-│   │   │    ├── logback.xml
-│   │   │    └── META-INF/
-│   │   │        └── persistence.xml
+│   │   │   ├── mapper/                 # DTO-Entity Mappers
+│   │   │   ├── service/                # Business Logic
+│   │   │   │   ├── impl/
+│   │   │   │   └── interfaces/
+│   │   │   ├── servlets/               # Servlet Controllers
+│   │   │   └── utils/                  # Utility Classes
+│   │   ├── resources/
+│   │   │   ├── logback.xml
+│   │   │   └── META-INF/
 │   │   └── webapp/
-│   │     ├── index.jsp                  # Homepage / landing page
-│   │     ├── resources/                 # Static resources (CSS, JS, images)
-│   │     │    ├── css/
-│   │     │    │    └── styles.css
-│   │     │    ├── js/
-│   │     │    │    └── scripts.js
-│   │     │    └── images/
-│   │     └── WEB-INF/
-│   │          ├── views/
-│   │          │    ├── donors/          # JSPs related to Donor functionality
-│   │          │    │    ├── list.jsp
-│   │          │    │    ├── create.jsp
-│   │          │    │    └── edit.jsp
-│   │          │    ├── recipients/      # JSPs related to Recipient functionality
-│   │          │    │    ├── list.jsp
-│   │          │    │    ├── create.jsp
-│   │          │    │    └── edit.jsp
-│   │          │    ├── common/          # Shared JSP fragments (headers, footers, navbars)
-│   │          │    │    ├── header.jsp
-│   │          │    │    ├── footer.jsp
-│   │          │    │    └── messages.jsp
-│   │          │    └── error.jsp        # Generic error page
-│   │          ├── lib/                  # JSP tag libraries if any
-│   │          └── web.xml                # Servlet and filter configuration, no annotations
-│   │            
-│   │           
+│   │       ├── resources/
+│   │       │   └── js/
+│   │       └── WEB-INF/
+│   │           └── views/
 │   └── test/
-│       ├── java/
-│       │   └── integration/
-│       │       ├── DonorServiceIntegrationTest.java
-│       │       ├── IntegrationTestBase.java
-│       │       └── RecipientIntegratedTest.java
-│       └── resources/
-│           ├── logback.xml
-│           └── META-INF/
-│               └── persistence.xml
-├── logs/
-├── target/
-└── README.md
+       ├── java/
+       │   └── integration/
+       └── resources/
 ```
 
-## Key Changes
+## Dependencies
 
-- **Modular Structure:** The codebase is now organized by domain (controller, dao, dto, entity, mapper, service, utils).
-- **DAO Layer:** `dao/interfaces` and `dao/impl` separate interfaces from implementations for data access.
-- **Service Layer:** `service/interfaces` and `service/impl` separate business logic interfaces from implementations.
-- **Entity Layer:** All JPA entities and enums are under `entity/` and `entity/enums/`.
-- **DTOs and Mappers:** DTOs and their mappers are in dedicated folders.
-- **Controllers:** Controllers for Donor, Recipient, and Donation are in `controller/`.
-- **Utilities:** Common utilities (logging, JPA, routing, DI) are in `utils/`.
-- **Servlets:** Java servlets are in `servlets/`.
-- **Web Resources:** JSPs and web.xml are under `webapp/`.
-- **Test Structure:** Integration tests and test resources are under `test/`.
+```xml
+<dependencies>
+    <!-- JPA & Hibernate -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>5.6.15.Final</version>
+    </dependency>
+    
+    <!-- PostgreSQL -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.6.0</version>
+    </dependency>
+    
+    <!-- Servlet API -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <!-- JSP & JSTL -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+    </dependency>
+    
+    <!-- Logging -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.11</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.7</version>
+    </dependency>
+    
+    <!-- Testing -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.3.1</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
 
-## Build & Run
+## Setup & Installation
 
-- Use Maven to build:
-  ```sh
-  mvn clean install
-  ```
-- Main entry point for testing JPA/Hibernate: [`Main.java`](src/main/java/Main.java)
-- Web application entry: Deploy the WAR to a servlet container (e.g., Tomcat).
+### Prerequisites
+- JDK 11+
+- Maven 3.6+
+- PostgreSQL 12+
+- Apache Tomcat 9+
 
-## Logging & Persistence
+### Database Setup
+1. Create PostgreSQL database:
+```bash
+sudo -u postgres psql
+postgres=# CREATE DATABASE b_apheresis;
+postgres=# CREATE USER bapheresis_user WITH PASSWORD 'your_password';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE bapheresis TO bapheresis_user;
+```
 
-- Logging is configured via `logback.xml` in `src/main/resources`.
-- JPA persistence is configured in `src/main/resources/META-INF/persistence.xml`.
+2. Configure `src/main/resources/META-INF/persistence.xml`:
+```xml
+<property name="javax.persistence.jdbc.url" 
+          value="jdbc:postgresql://localhost:5432/b_apheresis"/>
+<property name="javax.persistence.jdbc.user" value="bapheresis_user"/>
+<property name="javax.persistence.jdbc.password" value="your_password"/>
+```
+
+### Build & Deploy
+1. Clone repository:
+```bash
+git clone https://github.com/your-username/B-Apheresis.git
+cd B-Apheresis
+```
+
+2. Build project:
+```bash
+mvn clean install
+```
+
+3. Deploy to Tomcat:
+```bash
+cp target/B-Apheresis.war $CATALINA_HOME/webapps/
+```
+
+## Running the Application
+
+### Development Mode
+```bash
+mvn tomcat7:run
+```
+Access at: http://localhost:8080/B-Apheresis
+
+### Production Mode
+1. Start Tomcat:
+```bash
+$CATALINA_HOME/bin/startup.sh
+```
+
+2. Access at: http://your-server:8080/B-Apheresis
 
 ## Testing
+Run tests with:
+```bash
+mvn test
+```
 
-- Integration tests are in `src/test/java/integration/`.
-- Test resources (H2 DB, logback) are in `src/test/resources/`.
-
----
+## Logging
+Logs are written to `logs/` directory as configured in `logback.xml`
