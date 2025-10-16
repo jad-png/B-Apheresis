@@ -5,15 +5,12 @@ import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.enums.BloodType;
 import entity.enums.Gender;
-import junit.framework.Assert;
 import mapper.DonorMapper;
 import org.junit.jupiter.api.Test;
 import service.impl.DonorServiceImpl;
 import service.interfaces.DonorService;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DonorServiceIntegrationTest extends IntegrationTestBase {
 
+    private DonorService buildService() {
+        DonorDao dao = new DonorDaoImpl(emf); // Pass EntityManagerFactory
+        DonorMapper mapper = new DonorMapper();
+        return new DonorServiceImpl(dao, mapper, em); // Assumes DonorServiceImpl accepts these
+    }
+
     @Test
     void testCreateAndRetrieveDonor() {
-        DonorDao dao = new DonorDaoImpl(em);
-        DonorMapper mapper = new DonorMapper();
-        DonorService service = new DonorServiceImpl(dao, mapper, em);
+        DonorService service = buildService();
 
         DonorDTO dto = new DonorDTO();
         dto.setCin("HH421");
@@ -43,30 +44,30 @@ public class DonorServiceIntegrationTest extends IntegrationTestBase {
 
         Optional<DonorDTO> donor = service.getDonorById(saved.getId());
         assertThat(donor).isPresent();
-        assertThat(donor.get().getFirstName()).isEqualTo(saved.getFirstName());
+        assertThat(donor.get().getFirstName()).isEqualTo("Test");
     }
 
     @Test
     void testUpdateAndDeleteDonor() {
-        DonorDao dao = new DonorDaoImpl(em);
-        DonorMapper mapper = new DonorMapper();
-        DonorService service = new DonorServiceImpl(dao, mapper, em);
+        DonorService service = buildService();
 
         DonorDTO dto = new DonorDTO();
         dto.setCin("CC987");
-        dto.setFirstName("younes");
+        dto.setFirstName("Younes");
         dto.setLastName("Ben Said");
         dto.setBloodType(BloodType.O_NEG);
         dto.setGender(Gender.FEMALE);
         dto.setBirthday(LocalDate.of(2004, 5, 20));
 
         DonorDTO saved = service.createDonor(dto);
-        saved.setLastName("updated");
+        assertThat(saved.getId()).isNotNull();
 
+        saved.setLastName("Updated");
         DonorDTO updated = service.updateDonor(saved);
-        assertThat(updated.getLastName()).isEqualTo("updated");
+        assertThat(updated.getLastName()).isEqualTo("Updated");
 
         service.deleteDonor(updated.getId());
-        assertThat(service.getAllDonors()).hasSize(0);
+        List<DonorDTO> donors = service.getAllDonors();
+        assertThat(donors).isEmpty();
     }
 }

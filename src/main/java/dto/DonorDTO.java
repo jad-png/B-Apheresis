@@ -13,7 +13,6 @@ public class DonorDTO {
     private String firstName;
     private String lastName;
     private String cin;
-    private String phone;
     private LocalDate birthday;
     private BloodType bloodType;
     private Gender gender;
@@ -41,9 +40,6 @@ public class DonorDTO {
 
     public String getCin()  { return cin; }
     public void setCin(String cin) { this.cin = cin; }
-
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
 
     public LocalDate getBirthday() { return birthday; }
     public void setBirthday(LocalDate birthday) { this.birthday = birthday; }

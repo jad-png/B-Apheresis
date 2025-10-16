@@ -6,11 +6,13 @@
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
           <factory-entry name="B-ApheresisPU" />
+          <factory-entry name="testPU" />
         </datasource-mapping>
         <naming-strategy-map>
           <unit-entry name="B-ApheresisPU" />
+          <unit-entry name="testPU" />
         </naming-strategy-map>
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/test/resources/META-INF/persistence.xml" />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>
   </component>

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RecipientController extends Loggable {
-    private final RecipientServiceImpl service;
+    private final RecipientService service;
 
     public RecipientController(RecipientService service) {
         this.service = service;

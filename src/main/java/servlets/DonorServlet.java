@@ -2,14 +2,22 @@ package servlets;
 
 import config.DIContainer;
 import controller.DonorController;
+import dao.impl.DonorDaoImpl;
+import dao.interfaces.DonorDao;
 import dto.DonorDTO;
 import entity.Donor;
 import entity.enums.BloodType;
 import entity.enums.Gender;
 import entity.enums.MedicalCondition;
 import mapper.DonorMapper;
+import service.impl.DonorServiceImpl;
+import service.interfaces.DonorService;
 import utils.Router;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -76,14 +84,14 @@ public class DonorServlet extends HttpServlet {
 
     // --------- Views ---------
     private void showCreateForm(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Router.goTo(res, req, "/donor/create");
+        Router.goTo(res, req, "/donors/create");
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         Optional<DonorDTO> donorOpt = controller.getDonor(id);
         donorOpt.ifPresent(d -> req.setAttribute("donor", d));
-        Router.goTo(res, req, "/donor/edit");
+        Router.goTo(res, req, "/donors/edit");
     }
 
     private void handleFilter(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -115,7 +123,7 @@ public class DonorServlet extends HttpServlet {
             List<DonorDTO> donors = controller.getAllDonors();
             req.setAttribute("donors", donors);
         req.setAttribute("successMessage", "Operation completed successfully!");
-        Router.goTo(res, req, "/donor/list");
+        Router.goTo(res, req, "/donors/list");
     }
 
     private void listDonorsByBloodType(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -131,7 +139,7 @@ public class DonorServlet extends HttpServlet {
             req.setAttribute("donors", availableDonors);
         req.setAttribute("successMessage", "Operation completed successfully!");
 
-        Router.goTo(res, req, "/donor/list");
+        Router.goTo(res, req, "/donors/list");
     }
 
     private void listEligibleDonors(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -144,20 +152,34 @@ public class DonorServlet extends HttpServlet {
                 req.setAttribute("successMessage", "Operation completed successfully!");
 
             }
-        Router.goTo(res, req, "/donor/list");
+        Router.goTo(res, req, "/donors/list");
     }
 
     // --------- Handlets ---------
     private void handleCreate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+        System.out.println("=== HANDLE CREATE CALLED ===");
+
+        System.out.println("Controller: " + (controller != null ? "INITIALIZED" : "NULL"));
+        System.out.println("Mapper: " + (mapper != null ? "INITIALIZED" : "NULL"));
+
+        if (controller == null || mapper == null) {
+            System.out.println("ERROR: Dependencies not initialized!");
+            req.setAttribute("errorMessage", "System error: Services not initialized");
+            showCreateForm(req, res);
+            return;
+        }
         DonorDTO dto = extractDonorFromRequest(req);
+
 
         Donor d = mapper.toEntity(dto);
 
         dto.setEligible(controller.isEligible(d));
         dto.setCanDonate(controller.canDonate(d));
 
+//        testAllLayers();
         controller.createDonor(dto);
-        Router.goTo(res, req, "/donors?action=list");
+        res.sendRedirect(req.getContextPath() + "/donors?action=list&success=created");
         req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
@@ -201,4 +223,6 @@ public class DonorServlet extends HttpServlet {
 
         return dto;
     }
+
+
 }

@@ -1,5 +1,5 @@
 <html>
 <body>
-    <jsp:include page="hello" />
+    <jsp:include page="/donors" />
 </body>
 </html>
