@@ -63,7 +63,7 @@ public class DonationServlet extends HttpServlet {
                 handleCreate(req, res);
                 break;
             default:
-                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+            req.setAttribute("errorMessage", "Something went wrong!");
         }
     }
 
@@ -72,20 +72,21 @@ public class DonationServlet extends HttpServlet {
         List<DonationDTO> d = donationCon.getAllDonations();
         req.setAttribute("donations", d);
         Router.goTo(res, req, "/donations/list");
+        req.setAttribute("successMessage", "All donations have been successfully listed");
     }
 
     private void showMatchPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String donorIdParam = req.getParameter("donorId");
 
         if (donorIdParam == null || donorIdParam.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "donorId is required");
+            req.setAttribute("errorMessage", "something went wrong!");
             return;
         }
             Long donorId = Long.parseLong(donorIdParam);
             Optional<DonorDTO> donorOpt = donorCon.getDonor(donorId);
 
             if (!donorOpt.isPresent()) {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Donor not found with ID: " + donorId);
+                req.setAttribute("errorMessage", "Donor not found!");
                 return;
             }
 
@@ -95,19 +96,21 @@ public class DonationServlet extends HttpServlet {
             req.setAttribute("donor", donor);
             req.setAttribute("compatibleRecipients", compatibleRecipients);
             Router.goTo(res, req, "/donations/match");
+            req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     private void handleDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String idParam = req.getParameter("id");
 
         if (idParam == null || idParam.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "donorId is required");
+            req.setAttribute("errorMessage", "something went wrong!");
             Router.redirect(res, req, "/donations?action=list");
         }
 
         Long id = Long.parseLong(idParam);
         donationCon.deleteDonation(id);
         Router.redirect(res, req, "/donations?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 
     // --------- Form Handlers ---------
@@ -118,7 +121,7 @@ public class DonationServlet extends HttpServlet {
 
         if (donorIdParam == null || recipientIdParam == null
             || recipientIdParam.isEmpty() || donorIdParam.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing donorId or recipientId");
+            req.setAttribute("errorMessage", "something went wrong!");
             return;
         }
 
@@ -131,6 +134,7 @@ public class DonationServlet extends HttpServlet {
 
         donationCon.createDonation(dto);
         Router.redirect(res, req, "/donations?action=list");
+        req.setAttribute("successMessage", "Operation completed successfully!");
     }
 }
 
